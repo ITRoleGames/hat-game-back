@@ -8,7 +8,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.7.21"
 }
 
-group = "rubber.dutch"
+group = "rubber.dutch.hat"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
