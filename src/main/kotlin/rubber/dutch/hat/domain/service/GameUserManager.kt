@@ -5,6 +5,7 @@ import rubber.dutch.hat.domain.GameConfigProperties
 import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
 import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.port.GameSaver
+import java.util.*
 
 @Component
 class GameUserManager(
@@ -12,7 +13,7 @@ class GameUserManager(
   private val gameConfigProperties: GameConfigProperties
 ) {
 
-  fun joinUserToGame(userId: String, game: Game) {
+  fun joinUserToGame(userId: UUID, game: Game) {
     if (game.users.size < gameConfigProperties.maxPlayers) {
       game.users.add(userId)
       gameSaver.save(game)

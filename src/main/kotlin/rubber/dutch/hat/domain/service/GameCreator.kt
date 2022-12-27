@@ -9,10 +9,10 @@ import java.util.*
 @Component
 class GameCreator(private val gameSaver: GameSaver) {
 
-  fun createGame(creatorId: String, config: GameConfig): Game {
+  fun createGame(creatorId: UUID, config: GameConfig): Game {
     val game = Game(
       gameId = generateUuid(),
-      code = generateUuid(),
+      code = generateCode(),
       creatorId = creatorId,
       config = config,
       users = mutableSetOf(creatorId)
@@ -20,7 +20,11 @@ class GameCreator(private val gameSaver: GameSaver) {
     return gameSaver.save(game)
   }
 
-  private fun generateUuid(): String {
+  private fun generateUuid(): UUID {
+    return UUID.randomUUID()
+  }
+
+  private fun generateCode(): String {
     return UUID.randomUUID().toString().replace("-", "")
   }
 

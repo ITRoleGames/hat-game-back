@@ -13,7 +13,7 @@ import rubber.dutch.hat.app.dto.JoinGameRequest
 import rubber.dutch.hat.domain.GameConfigProperties
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
-import java.util.*
+import java.util.UUID.randomUUID
 
 class GameControllerTest : BaseApplicationTest() {
 
@@ -22,7 +22,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `create game success`() {
-    val userId = "user_id"
+    val userId = randomUUID()
     callCreateGame(CreateGameRequest(userId, 10, 30))
       .andExpect {
         status { isOk() }
@@ -33,7 +33,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `join game success`() {
-    val userId = "user_id"
+    val userId = randomUUID()
     val mockResponse = callCreateGame(CreateGameRequest(userId, 10, 30))
       .andExpect {
         status { isOk() }
@@ -50,7 +50,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `join unknown game failed`() {
-    val mockResponse = callJoinGame(JoinGameRequest("unknown_game_code", "user_2"))
+    val mockResponse = callJoinGame(JoinGameRequest("unknown_game_code", randomUUID()))
       .andExpect {
         status { isUnprocessableEntity() }
       }.andReturn().response
@@ -61,7 +61,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `join game players limit exceeded`() {
-    val userId = "user_id"
+    val userId = randomUUID()
     val createGameMockResponse = callCreateGame(CreateGameRequest(userId, 10, 30))
       .andExpect {
         status { isOk() }
@@ -71,14 +71,14 @@ class GameControllerTest : BaseApplicationTest() {
     val createGameResponse: CreateGameResponse = objectMapper.readValue(createGameMockResponse.contentAsString)
 
     repeat(gameConfigProperties.maxPlayers - 1) {
-      callJoinGame(JoinGameRequest(code = createGameResponse.code, userId = UUID.randomUUID().toString()))
+      callJoinGame(JoinGameRequest(code = createGameResponse.code, userId = randomUUID()))
         .andExpect {
           status { isOk() }
         }
     }
 
     val joinGameMockResponse =
-      callJoinGame(JoinGameRequest(code = createGameResponse.code, userId = UUID.randomUUID().toString()))
+      callJoinGame(JoinGameRequest(code = createGameResponse.code, userId = randomUUID()))
         .andExpect {
           status { isUnprocessableEntity() }
         }.andReturn().response

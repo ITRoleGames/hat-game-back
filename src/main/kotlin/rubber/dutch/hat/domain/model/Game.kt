@@ -3,22 +3,24 @@ package rubber.dutch.hat.domain.model
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import java.util.*
 
 @Entity
 @Table(name = "game")
-data class Game(
+class Game(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
   val id: Long? = null,
 
-  @Column(nullable = false)
-  val gameId: String,
+  @Column(name="game_id", nullable = false)
+  val gameId: UUID,
 
   @Column(nullable = false)
   val code: String,
 
   @Column(name = "creator_id")
-  val creatorId: String,
+  val creatorId: UUID,
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "config")
@@ -27,11 +29,11 @@ data class Game(
   @ElementCollection
   @CollectionTable(name = "game_to_user", joinColumns = [JoinColumn(name = "game_id")])
   @Column(name = "user_id")
-  val users: MutableSet<String> = mutableSetOf()
+  val users: MutableSet<UUID> = mutableSetOf()
 
 ) {
 
-  fun userIsJoined(userId: String): Boolean {
+  fun userIsJoined(userId: UUID): Boolean {
     return users.contains(userId)
   }
 }

@@ -1,6 +1,7 @@
 package rubber.dutch.hat.app.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import java.util.*
 
 data class JoinGameRequest(
 
@@ -8,5 +9,5 @@ data class JoinGameRequest(
   val code: String,
 
   @field:Schema(description = "id пользователя")
-  val userId: String
+  val userId: UUID
 )

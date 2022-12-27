@@ -24,7 +24,7 @@ class GameController(
       ApiResponse(
         responseCode = "200", description = "Игра создана"),
       ApiResponse(
-        responseCode = "422", description = "Бизнес-ошибка>"
+        responseCode = "422", description = "Бизнес-ошибка"
       )]
   )
   @PostMapping("/api/v1/games")
@@ -35,12 +35,12 @@ class GameController(
   }
 
   @Operation(
-    summary = "Присоединить Присоединить к игре",
+    summary = "Присоединить пользователя к игре",
     responses = [
       ApiResponse(
         responseCode = "200", description = "Пользователь присоединён к игре"),
       ApiResponse(
-        responseCode = "422", description = "Бизнес-ошибка>"
+        responseCode = "422", description = "Бизнес-ошибка"
       )]
   )
   @PostMapping("/api/v1/games/join")

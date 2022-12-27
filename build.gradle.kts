@@ -3,9 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.0.1-SNAPSHOT"
 	id("io.spring.dependency-management") version "1.1.0"
-	kotlin("jvm") version "1.7.21"
-	kotlin("plugin.spring") version "1.7.21"
 	kotlin("plugin.jpa") version "1.7.21"
+	kotlin("plugin.allopen") version "1.7.21"
+	kotlin("plugin.spring") version "1.7.21"
+	kotlin("jvm") version "1.7.21"
+}
+
+allOpen {
+	annotations("javax.persistence.Entity", "javax.persistence.MappedSuperclass", "javax.persistence.Embedabble")
 }
 
 group = "rubber.dutch.hat"
