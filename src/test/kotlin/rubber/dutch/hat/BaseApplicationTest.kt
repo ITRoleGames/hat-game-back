@@ -30,7 +30,7 @@ class BaseApplicationTest {
     @DynamicPropertySource
     @JvmStatic
     fun initProperties(registry: DynamicPropertyRegistry) {
-      registry.add("spring.datasource.url") { "jdbc:tc:postgresql:12:///test_database" }
+      registry.add("spring.datasource.url") { "jdbc:tc:postgresql:12:///${postgreSQLContainer.databaseName}" }
       registry.add("spring.datasource.username") { postgreSQLContainer.username }
       registry.add("spring.datasource.password") { postgreSQLContainer.password }
       registry.add("spring.datasource.driverClassName") { "org.testcontainers.jdbc.ContainerDatabaseDriver" }

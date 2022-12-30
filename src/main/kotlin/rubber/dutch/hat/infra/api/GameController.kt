@@ -1,6 +1,8 @@
 package rubber.dutch.hat.infra.api
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -11,6 +13,7 @@ import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.CreateGameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.app.dto.JoinGameResponse
+import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
 @RestController
 class GameController(
@@ -22,9 +25,13 @@ class GameController(
     summary = "Создать игру",
     responses = [
       ApiResponse(
-        responseCode = "200", description = "Игра создана"),
+        responseCode = "200",
+        description = "Игра создана"
+      ),
       ApiResponse(
-        responseCode = "422", description = "Бизнес-ошибка"
+        responseCode = "422",
+        description = "Бизнес-ошибка",
+        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
   @PostMapping("/api/v1/games")
@@ -38,9 +45,13 @@ class GameController(
     summary = "Присоединить пользователя к игре",
     responses = [
       ApiResponse(
-        responseCode = "200", description = "Пользователь присоединён к игре"),
+        responseCode = "200",
+        description = "Пользователь присоединён к игре"
+      ),
       ApiResponse(
-        responseCode = "422", description = "Бизнес-ошибка"
+        responseCode = "422",
+        description = "Бизнес-ошибка",
+        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
   @PostMapping("/api/v1/games/join")
