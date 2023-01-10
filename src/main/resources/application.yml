@@ -12,8 +12,8 @@ spring:
     username: ${DB_USER:hat_game}
     password: ${DB_PASSWORD:test1234}
     driver-class-name: org.postgresql.Driver
-#    hikari:
-#      schema: game
+    hikari:
+      schema: game
 
 app:
   game:
