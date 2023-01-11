@@ -8,7 +8,7 @@ import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.CreateGameResponse
+import rubber.dutch.hat.app.dto.GameDto
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.GameConfigProperties
 import rubber.dutch.hat.infra.api.dto.ErrorCode
@@ -27,7 +27,10 @@ class GameControllerTest : BaseApplicationTest() {
       .andExpect {
         status { isOk() }
         content { contentType(MediaType.APPLICATION_JSON) }
-        content { json("{}") }
+        jsonPath("id") { isNotEmpty() }
+        jsonPath("code") { isNotEmpty() }
+        jsonPath("wordsPerPlayer") { value(10) }
+        jsonPath("moveTime") { value(30) }
       }
   }
 
@@ -40,11 +43,15 @@ class GameControllerTest : BaseApplicationTest() {
         content { contentType(MediaType.APPLICATION_JSON) }
         content { json("{}") }
       }.andReturn().response
-    val createGameResponse: CreateGameResponse = objectMapper.readValue(mockResponse.contentAsString)
+    val createGameResponse: GameDto = objectMapper.readValue(mockResponse.contentAsString)
 
     callJoinGame(JoinGameRequestPayload(code = createGameResponse.code, userId = userId))
       .andExpect {
         status { isOk() }
+        jsonPath("id") { isNotEmpty() }
+        jsonPath("code") { isNotEmpty() }
+        jsonPath("wordsPerPlayer") { value(10) }
+        jsonPath("moveTime") { value(30) }
       }
   }
 
@@ -68,7 +75,7 @@ class GameControllerTest : BaseApplicationTest() {
         content { contentType(MediaType.APPLICATION_JSON) }
         content { json("{}") }
       }.andReturn().response
-    val createGameResponse: CreateGameResponse = objectMapper.readValue(createGameMockResponse.contentAsString)
+    val createGameResponse: GameDto = objectMapper.readValue(createGameMockResponse.contentAsString)
 
     repeat(gameConfigProperties.maxPlayers - 1) {
       callJoinGame(JoinGameRequestPayload(code = createGameResponse.code, userId = randomUUID()))

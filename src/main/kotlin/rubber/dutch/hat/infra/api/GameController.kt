@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 import rubber.dutch.hat.app.CreateGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.CreateGameResponse
+import rubber.dutch.hat.app.dto.GameDto
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
-import rubber.dutch.hat.app.dto.JoinGameResponse
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
 @RestController
@@ -37,7 +36,7 @@ class GameController(
   @PostMapping("/api/v1/games")
   fun createGame(
     @RequestBody payload: CreateGameRequestPayload
-  ): CreateGameResponse {
+  ): GameDto {
     return createGameUsecase.execute(payload)
   }
 
@@ -57,7 +56,7 @@ class GameController(
   @PostMapping("/api/v1/games/join")
   fun joinGame(
     @RequestBody payload: JoinGameRequestPayload
-  ): JoinGameResponse {
+  ): GameDto {
     return joinGameUsecase.execute(payload)
   }
 
