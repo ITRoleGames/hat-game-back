@@ -53,7 +53,7 @@ class GameController(
         content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
-  @PostMapping("/api/v1/games/join")
+  @PostMapping("/api/v1/game/join")
   fun joinGame(
     @RequestBody payload: JoinGameRequestPayload
   ): GameDto {
