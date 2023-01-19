@@ -5,24 +5,28 @@ import rubber.dutch.hat.domain.model.Game
 import java.util.*
 
 data class GameDto(
-  @field:Schema(description = "id игры")
-  val id: UUID,
+        @field:Schema(description = "id игры")
+        val id: UUID,
 
-  @field:Schema(description = "код игры")
-  val code: String,
+        @field:Schema(description = "код игры")
+        val code: String,
 
-  @field:Schema(description = "Количество слов на участника игры")
-  val wordsPerPlayer: Int,
+        @field:Schema(description = "Количество слов на участника игры")
+        val wordsPerPlayer: Int,
 
-  @field:Schema(description = "Количество секунд на ход")
-  val moveTime: Int
+        @field:Schema(description = "Количество секунд на ход")
+        val moveTime: Int,
+
+        @field:Schema(description = "ID игроков")
+        val users: Set<UUID>
 )
 
-fun Game.toDto() : GameDto {
-  return GameDto(
-    id = gameId,
-    code = code,
-    wordsPerPlayer = config.wordsPerPlayer,
-    moveTime = config.moveTime
-  )
+fun Game.toDto(): GameDto {
+    return GameDto(
+            id = gameId,
+            code = code,
+            wordsPerPlayer = config.wordsPerPlayer,
+            moveTime = config.moveTime,
+            users = users
+    )
 }

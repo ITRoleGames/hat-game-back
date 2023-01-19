@@ -4,41 +4,65 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateGameUsecase
+import rubber.dutch.hat.app.GetGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameDto
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
+import rubber.dutch.hat.domain.model.event.GameUpdatedEvent
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import java.util.*
 
 @RestController
 class GameController(
-  private val createGameUsecase: CreateGameUsecase,
-  private val joinGameUsecase: JoinGameUsecase
+        private val getGameUsecase: GetGameUsecase,
+        private val createGameUsecase: CreateGameUsecase,
+        private val joinGameUsecase: JoinGameUsecase,
+        private val messagingTemplate: SimpMessagingTemplate
 ) {
 
-  @Operation(
-    summary = "Создать игру",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Игра создана"
-      ),
-      ApiResponse(
-        responseCode = "422",
-        description = "Бизнес-ошибка",
-        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-      )]
-  )
-  @PostMapping("/api/v1/games")
-  fun createGame(
-    @RequestBody payload: CreateGameRequestPayload
-  ): GameDto {
-    return createGameUsecase.execute(payload)
-  }
+    @Operation(
+            summary = "Получить игру по ID",
+            responses = [
+                ApiResponse(
+                        responseCode = "200",
+                        description = "Найденная игра"
+                ),
+                ApiResponse(
+                        responseCode = "422",
+                        description = "Бизнес-ошибка",
+                        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+                )]
+    )
+    @GetMapping("/api/v1/games/{id}")
+    fun getGame(@PathVariable id: String, @RequestHeader("user-id") currentUserId: String): GameDto {
+        //todo: validate user-id
+        val gameId = UUID.fromString(id)
+        return getGameUsecase.execute(gameId)
+    }
+
+    @Operation(
+            summary = "Создать игру",
+            responses = [
+                ApiResponse(
+                        responseCode = "200",
+                        description = "Игра создана"
+                ),
+                ApiResponse(
+                        responseCode = "422",
+                        description = "Бизнес-ошибка",
+                        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+                )]
+    )
+    @PostMapping("/api/v1/games")
+    fun createGame(
+            @RequestBody payload: CreateGameRequestPayload
+    ): GameDto {
+        return createGameUsecase.execute(payload)
+    }
 
   @Operation(
     summary = "Присоединить пользователя к игре",
@@ -53,11 +77,17 @@ class GameController(
         content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
-  @PostMapping("/api/v1/games/join")
+  @PostMapping("/api/v1/game/join")
   fun joinGame(
     @RequestBody payload: JoinGameRequestPayload
   ): GameDto {
     return joinGameUsecase.execute(payload)
   }
 
+
+    @GetMapping("/api/v1/test")
+    fun test() {
+
+        messagingTemplate.convertAndSend("/topic", GameUpdatedEvent(UUID.randomUUID()))
+    }
 }
