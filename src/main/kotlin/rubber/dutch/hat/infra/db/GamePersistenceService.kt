@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.port.GameFinder
 import rubber.dutch.hat.domain.port.GameSaver
+import java.util.*
 
 @Component
 class GamePersistenceService(
@@ -12,6 +13,10 @@ class GamePersistenceService(
 
   override fun save(game: Game): Game {
     return gameRepository.save(game)
+  }
+
+  override fun findById(id: UUID): Game? {
+    return gameRepository.findByGameId(id)
   }
 
   override fun findByCode(code: String): Game? {

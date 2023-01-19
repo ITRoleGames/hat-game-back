@@ -14,8 +14,8 @@ class GameUserManager(
 ) {
 
   fun joinUserToGame(userId: UUID, game: Game) {
-    if (game.users.size < gameConfigProperties.maxPlayers) {
-      game.users.add(userId)
+    if (game.players.size < gameConfigProperties.maxPlayers) {
+      game.addPlayer(userId)
       gameSaver.save(game)
     } else {
       throw PlayersLimitExceededException()

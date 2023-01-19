@@ -15,9 +15,11 @@ class GameCreator(private val gameSaver: GameSaver) {
       code = generateCode(),
       creatorId = creatorId,
       config = config,
-      users = mutableSetOf(creatorId)
     )
-    return gameSaver.save(game)
+    val newGame = gameSaver.save(game)
+    // TODO: получается очень коряво с этими двумя сохранениями. Перейти на UUID как первичный ключ?
+    newGame.addPlayer(creatorId)
+    return gameSaver.save(newGame)
   }
 
   private fun generateUuid(): UUID {
