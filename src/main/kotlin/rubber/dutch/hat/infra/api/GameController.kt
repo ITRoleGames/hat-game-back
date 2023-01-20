@@ -29,6 +29,11 @@ class GameController(
                         description = "Найденная игра"
                 ),
                 ApiResponse(
+                        responseCode = "400",
+                        description = "Неверные параметры запроса",
+                        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+                ),
+                ApiResponse(
                         responseCode = "422",
                         description = "Бизнес-ошибка",
                         content = [Content(schema = Schema(implementation = ErrorResponse::class))]
