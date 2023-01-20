@@ -23,7 +23,7 @@ class ControllerExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-  fun handleValidationException(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> {
+  fun handleInvalidArgumentException(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> {
     return ResponseEntity.badRequest().body(ErrorResponse(ErrorCode.BAD_REQUEST))
   }
 
