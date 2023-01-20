@@ -102,7 +102,7 @@ class GameControllerTest : BaseApplicationTest() {
   }
 
   private fun callJoinGame(request: JoinGameRequestPayload): ResultActionsDsl {
-    return mockMvc.post("/api/v1/games/join") {
+    return mockMvc.post("/api/v1/game/join") {
       content = objectMapper.writeValueAsString(request)
       contentType = MediaType.APPLICATION_JSON
     }
