@@ -18,7 +18,7 @@ import java.util.*
 class GameController(
         private val getGameUsecase: GetGameUsecase,
         private val createGameUsecase: CreateGameUsecase,
-        private val joinGameUsecase: JoinGameUsecase,
+        private val joinGameUsecase: JoinGameUsecase
 ) {
 
     @Operation(

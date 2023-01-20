@@ -11,9 +11,7 @@ import java.util.*
 class GetGameUsecase(private val gameProvider: GameProvider) {
 
     fun execute(gameId: UUID, currentUserId: UUID): GameDto {
-
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
-
         game.users.firstOrNull() { userId -> userId == currentUserId } ?: throw GameNotFoundException()
 
         return game.toDto()

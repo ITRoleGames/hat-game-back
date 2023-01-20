@@ -18,7 +18,6 @@ class GamePersistenceService(private val gameRepository: GameRepository) : GameS
     }
 
     override fun findById(id: UUID): Game? {
-
         return gameRepository.findByGameId(id)
     }
 }
