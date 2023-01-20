@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateGameUsecase
 import rubber.dutch.hat.app.GetGameUsecase
@@ -12,7 +11,6 @@ import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameDto
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
-import rubber.dutch.hat.domain.model.event.GameUpdatedEvent
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.*
 
@@ -21,7 +19,6 @@ class GameController(
         private val getGameUsecase: GetGameUsecase,
         private val createGameUsecase: CreateGameUsecase,
         private val joinGameUsecase: JoinGameUsecase,
-        private val messagingTemplate: SimpMessagingTemplate
 ) {
 
     @Operation(
@@ -38,10 +35,8 @@ class GameController(
                 )]
     )
     @GetMapping("/api/v1/games/{id}")
-    fun getGame(@PathVariable id: String, @RequestHeader("user-id") currentUserId: String): GameDto {
-        //todo: validate user-id
-        val gameId = UUID.fromString(id)
-        return getGameUsecase.execute(gameId)
+    fun getGame(@PathVariable id: UUID, @RequestHeader("user-id") currentUserId: UUID): GameDto {
+        return getGameUsecase.execute(id, currentUserId)
     }
 
     @Operation(
@@ -83,11 +78,4 @@ class GameController(
   ): GameDto {
     return joinGameUsecase.execute(payload)
   }
-
-
-    @GetMapping("/api/v1/test")
-    fun test() {
-
-        messagingTemplate.convertAndSend("/topic", GameUpdatedEvent(UUID.randomUUID()))
-    }
 }
