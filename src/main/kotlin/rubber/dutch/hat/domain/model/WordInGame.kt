@@ -1,6 +1,7 @@
 package rubber.dutch.hat.domain.model
 
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 @Table(name = "word_in_game")
@@ -12,7 +13,7 @@ class WordInGame(
   val id: Long? = null,
 
   @Column(name = "game_id", nullable = false)
-  val gameId: Long,
+  val gameId: GameId,
 
   @Column(name = "author_id", nullable = false)
   val authorId: Long,

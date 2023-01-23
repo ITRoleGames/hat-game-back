@@ -11,18 +11,14 @@ import java.util.*
 @Table(name = "game")
 class Game(
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  val id: Long? = null,
-
-  @Column(name = "game_id", nullable = false)
-  val gameId: UUID,
+  val id: GameId,
 
   @Column(nullable = false)
   val code: String,
 
   @Column(name = "creator_id")
-  val creatorId: UUID,
+  val creatorId: UserId,
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "config")
@@ -32,27 +28,28 @@ class Game(
   @JoinColumn(name = "game_id")
   val players: MutableList<Player> = mutableListOf(),
 
-  @OneToMany(fetch = FetchType.LAZY)
+  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @JoinColumn(name = "game_id")
   val words: MutableList<WordInGame> = mutableListOf()
 ) {
 
-  fun userIsJoined(userId: UUID): Boolean {
+  fun isUserJoined(userId: UserId): Boolean {
     return players.any { it.userId == userId }
   }
 
-  fun addPlayer(userId: UUID) {
+  fun addPlayer(userId: UserId) {
     players.add(
       Player(
+        id = PlayerInternalId(),
         userId = userId,
-        gameId = id!!,
+        gameId = id,
         status = PlayerStatus.NEW,
         role = PlayerRole.PLAYER,
       )
     )
   }
 
-  fun addWordsToPlayer(userId: UUID, words: List<String>) {
+  fun addWordsToPlayer(userId: UserId, words: List<String>) {
     val player = players.find { it.userId == userId }
       ?: throw UserNotJoinedException()
 
@@ -62,9 +59,9 @@ class Game(
 
     val wordsInGame = words.map {
       WordInGame(
-        gameId = id!!,
+        gameId = id,
         value = it,
-        authorId = player.id!!,
+        authorId = player.id.internalId!!,
         status = WordInGameStatus.AVAILABLE
       )
     }
@@ -74,4 +71,5 @@ class Game(
       player.status = PlayerStatus.READY
     }
   }
+
 }

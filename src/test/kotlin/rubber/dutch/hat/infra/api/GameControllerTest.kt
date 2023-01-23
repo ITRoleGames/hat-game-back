@@ -8,6 +8,7 @@ import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.GameConfigProperties
+import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.UUID.randomUUID
@@ -19,7 +20,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN create game THAN success`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     callCreateGame(CreateGameRequestPayload(userId, 10, 30))
       .andExpect {
         status { isOk() }
@@ -33,7 +34,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN join game THAN success`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
     callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = userId))
@@ -48,7 +49,7 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN join to unknown game THEN error`() {
-    val mockResponse = callJoinGame(JoinGameRequestPayload("unknown_game_code", randomUUID()))
+    val mockResponse = callJoinGame(JoinGameRequestPayload("unknown_game_code", UserId(randomUUID())))
       .andExpect {
         status { isUnprocessableEntity() }
       }.andReturn().response
@@ -59,18 +60,18 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN join game and players limit exceeded THEN error`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
     repeat(gameConfigProperties.maxPlayers - 1) {
-      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = randomUUID()))
+      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = UserId(randomUUID())))
         .andExpect {
           status { isOk() }
         }
     }
 
     val joinGameMockResponse =
-      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = randomUUID()))
+      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = UserId(randomUUID())))
         .andExpect {
           status { isUnprocessableEntity() }
         }.andReturn().response

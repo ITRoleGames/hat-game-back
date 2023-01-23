@@ -6,15 +6,17 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import rubber.dutch.hat.app.CreateGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.GameDto
+import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
 @RestController
+@RequestMapping("/api/v1")
 class GameController(
   private val createGameUsecase: CreateGameUsecase,
   private val joinGameUsecase: JoinGameUsecase
@@ -33,10 +35,10 @@ class GameController(
         content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
-  @PostMapping("/api/v1/games")
+  @PostMapping("/games")
   fun createGame(
     @RequestBody payload: CreateGameRequestPayload
-  ): GameDto {
+  ): GameResponse {
     return createGameUsecase.execute(payload)
   }
 
@@ -53,10 +55,10 @@ class GameController(
         content = [Content(schema = Schema(implementation = ErrorResponse::class))]
       )]
   )
-  @PostMapping("/api/v1/game/join")
+  @PostMapping("/game/join")
   fun joinGame(
     @RequestBody payload: JoinGameRequestPayload
-  ): GameDto {
+  ): GameResponse {
     return joinGameUsecase.execute(payload)
   }
 

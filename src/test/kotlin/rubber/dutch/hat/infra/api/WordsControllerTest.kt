@@ -7,16 +7,16 @@ import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.AddWordsRequestPayload
+import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
-import java.util.*
 import java.util.UUID.randomUUID
 
 class WordsControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN add words THEN success`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
     callAddWords(
@@ -32,11 +32,11 @@ class WordsControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN add words from user not joined THEN error`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
     val mockResponse = callAddWords(
-      randomUUID(),
+      UserId(randomUUID()),
       AddWordsRequestPayload(
         gameDto.id,
         generateSequence { randomUUID().toString() }.take(gameDto.wordsPerPlayer).toList()
@@ -51,7 +51,7 @@ class WordsControllerTest : BaseApplicationTest() {
 
   @Test
   fun `WHEN add words more than wordsPerPlayer THEN error`() {
-    val userId = randomUUID()
+    val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
     val mockResponse = callAddWords(
@@ -68,9 +68,9 @@ class WordsControllerTest : BaseApplicationTest() {
     assert(errorResponse.code == ErrorCode.WORDS_LIMIT_EXCEEDED)
   }
 
-  private fun callAddWords(userId: UUID, payload: AddWordsRequestPayload): ResultActionsDsl {
+  private fun callAddWords(userId: UserId, payload: AddWordsRequestPayload): ResultActionsDsl {
     return mockMvc.post("/api/v1/words") {
-      header(USER_ID_HEADER, userId)
+      header(USER_ID_HEADER, userId.userId)
       content = objectMapper.writeValueAsString(payload)
       contentType = MediaType.APPLICATION_JSON
     }

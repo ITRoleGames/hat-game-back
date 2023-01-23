@@ -16,7 +16,7 @@ class GamePersistenceService(
   }
 
   override fun findById(id: UUID): Game? {
-    return gameRepository.findByGameId(id)
+    return gameRepository.findById(id).orElse(null)
   }
 
   override fun findByCode(code: String): Game? {

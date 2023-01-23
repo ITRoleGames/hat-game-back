@@ -14,9 +14,9 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Testcontainers
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.GameDto
+import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
-import java.util.*
+import rubber.dutch.hat.domain.model.UserId
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -58,13 +58,13 @@ class BaseApplicationTest {
     }
   }
 
-  protected fun createGame(userId: UUID): GameDto {
+  protected fun createGame(userId: UserId): GameResponse {
     val mockHttpServletResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
       .andExpect {
         status { isOk() }
       }
       .andReturn().response
-    return objectMapper.readValue(mockHttpServletResponse.contentAsString, GameDto::class.java)
+    return objectMapper.readValue(mockHttpServletResponse.contentAsString, GameResponse::class.java)
   }
 
 }

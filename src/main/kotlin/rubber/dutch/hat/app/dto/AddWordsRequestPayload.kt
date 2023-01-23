@@ -1,8 +1,8 @@
 package rubber.dutch.hat.app.dto
 
-import java.util.UUID
+import rubber.dutch.hat.domain.model.GameId
 
 data class AddWordsRequestPayload(
-  val gameId: UUID,
+  val gameId: GameId,
   val words: List<String>
 )
