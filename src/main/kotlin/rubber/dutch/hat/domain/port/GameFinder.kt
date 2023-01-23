@@ -5,6 +5,8 @@ import java.util.*
 
 interface GameFinder {
 
+  fun findById(id: UUID) : Game?
+
   fun findByCode(code: String) : Game?
 
   fun findById(id: UUID) : Game?
