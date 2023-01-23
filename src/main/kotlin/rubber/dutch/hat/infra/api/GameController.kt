@@ -4,16 +4,15 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateGameUsecase
 import rubber.dutch.hat.app.GetGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
+import rubber.dutch.hat.domain.model.GameId
+import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
 @RestController
@@ -43,7 +42,7 @@ class GameController(
                 )]
     )
     @GetMapping("/games/{id}")
-    fun getGame(@PathVariable id: UUID, @RequestHeader("user-id") currentUserId: UUID): GameDto {
+    fun getGame(@PathVariable id: GameId, @RequestHeader("user-id") currentUserId: UserId): GameResponse {
         return getGameUsecase.execute(id, currentUserId)
     }
 

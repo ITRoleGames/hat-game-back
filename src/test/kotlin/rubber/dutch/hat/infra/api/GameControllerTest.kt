@@ -9,8 +9,10 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
+import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.GameConfigProperties
+import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
@@ -23,11 +25,11 @@ class GameControllerTest : BaseApplicationTest() {
 
     @Test
     fun `get game success`() {
-        val userId = randomUUID()
+        val userId = UserId(randomUUID())
 
         val mockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
                 .andReturn().response
-        val createGameResponse: GameDto = objectMapper.readValue(mockResponse.contentAsString)
+        val createGameResponse: GameResponse = objectMapper.readValue(mockResponse.contentAsString)
 
         callGetGame(createGameResponse.id, userId)
                 .andExpect {
@@ -100,11 +102,5 @@ class GameControllerTest : BaseApplicationTest() {
 
         val errorResponse: ErrorResponse = objectMapper.readValue(joinGameMockResponse.contentAsString)
         assert(errorResponse.code == ErrorCode.PLAYERS_LIMIT_EXCEEDED)
-    }
-
-    private fun callGetGame(gameId: UUID, userId: UUID): ResultActionsDsl {
-        return mockMvc.get("/api/v1/games/$gameId") {
-            header("user-id", userId)
-        }
     }
 }

@@ -23,7 +23,7 @@ class JoinGameUsecase(
       gameUserManager.joinUserToGame(payload.userId, game)
     }
 
-    eventSender.send(GameUpdatedEvent(game.gameId))
+    eventSender.send(GameUpdatedEvent(game.id))
 
     return game.toGameResponse()
   }
