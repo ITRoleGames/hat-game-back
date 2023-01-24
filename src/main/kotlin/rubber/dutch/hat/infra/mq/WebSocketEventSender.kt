@@ -15,7 +15,7 @@ class WebSocketEventSender(private val messagingTemplate: SimpMessagingTemplate)
     }
 
     override fun send(event: GameEvent) {
-        val destination = "/topic/game/${event.gameId}"
+        val destination = "/topic/game/${event.gameId.gameId}"
         logger.debug("Sending WS event: $event")
         messagingTemplate.convertAndSend(destination, event)
     }
