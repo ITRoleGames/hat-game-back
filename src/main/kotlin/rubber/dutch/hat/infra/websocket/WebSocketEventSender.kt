@@ -1,4 +1,4 @@
-package rubber.dutch.hat.infra.mq
+package rubber.dutch.hat.infra.websocket
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
