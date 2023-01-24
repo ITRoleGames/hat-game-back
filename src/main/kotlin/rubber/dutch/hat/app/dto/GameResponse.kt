@@ -2,11 +2,11 @@ package rubber.dutch.hat.app.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import rubber.dutch.hat.domain.model.Game
-import java.util.*
+import rubber.dutch.hat.domain.model.GameId
 
-data class GameDto(
+data class GameResponse(
   @field:Schema(description = "id игры")
-  val id: UUID,
+  val id: GameId,
 
   @field:Schema(description = "код игры")
   val code: String,
@@ -18,9 +18,9 @@ data class GameDto(
   val moveTime: Int
 )
 
-fun Game.toDto() : GameDto {
-  return GameDto(
-    id = gameId,
+fun Game.toGameResponse() : GameResponse {
+  return GameResponse(
+    id = id,
     code = code,
     wordsPerPlayer = config.wordsPerPlayer,
     moveTime = config.moveTime

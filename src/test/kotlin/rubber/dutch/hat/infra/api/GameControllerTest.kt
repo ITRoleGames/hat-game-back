@@ -4,13 +4,11 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.ResultActionsDsl
-import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.GameDto
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.GameConfigProperties
+import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.UUID.randomUUID
@@ -21,8 +19,8 @@ class GameControllerTest : BaseApplicationTest() {
   private lateinit var gameConfigProperties: GameConfigProperties
 
   @Test
-  fun `create game success`() {
-    val userId = randomUUID()
+  fun `WHEN create game THAN success`() {
+    val userId = UserId(randomUUID())
     callCreateGame(CreateGameRequestPayload(userId, 10, 30))
       .andExpect {
         status { isOk() }
@@ -35,17 +33,11 @@ class GameControllerTest : BaseApplicationTest() {
   }
 
   @Test
-  fun `join game success`() {
-    val userId = randomUUID()
-    val mockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
-      .andExpect {
-        status { isOk() }
-        content { contentType(MediaType.APPLICATION_JSON) }
-        content { json("{}") }
-      }.andReturn().response
-    val createGameResponse: GameDto = objectMapper.readValue(mockResponse.contentAsString)
+  fun `WHEN join game THAN success`() {
+    val userId = UserId(randomUUID())
+    val gameDto = createGame(userId)
 
-    callJoinGame(JoinGameRequestPayload(code = createGameResponse.code, userId = userId))
+    callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = userId))
       .andExpect {
         status { isOk() }
         jsonPath("id") { isNotEmpty() }
@@ -56,8 +48,8 @@ class GameControllerTest : BaseApplicationTest() {
   }
 
   @Test
-  fun `join unknown game failed`() {
-    val mockResponse = callJoinGame(JoinGameRequestPayload("unknown_game_code", randomUUID()))
+  fun `WHEN join to unknown game THEN error`() {
+    val mockResponse = callJoinGame(JoinGameRequestPayload("unknown_game_code", UserId(randomUUID())))
       .andExpect {
         status { isUnprocessableEntity() }
       }.andReturn().response
@@ -67,45 +59,25 @@ class GameControllerTest : BaseApplicationTest() {
   }
 
   @Test
-  fun `join game players limit exceeded`() {
-    val userId = randomUUID()
-    val createGameMockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
-      .andExpect {
-        status { isOk() }
-        content { contentType(MediaType.APPLICATION_JSON) }
-        content { json("{}") }
-      }.andReturn().response
-    val createGameResponse: GameDto = objectMapper.readValue(createGameMockResponse.contentAsString)
+  fun `WHEN join game and players limit exceeded THEN error`() {
+    val userId = UserId(randomUUID())
+    val gameDto = createGame(userId)
 
     repeat(gameConfigProperties.maxPlayers - 1) {
-      callJoinGame(JoinGameRequestPayload(code = createGameResponse.code, userId = randomUUID()))
+      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = UserId(randomUUID())))
         .andExpect {
           status { isOk() }
         }
     }
 
     val joinGameMockResponse =
-      callJoinGame(JoinGameRequestPayload(code = createGameResponse.code, userId = randomUUID()))
+      callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = UserId(randomUUID())))
         .andExpect {
           status { isUnprocessableEntity() }
         }.andReturn().response
 
     val errorResponse: ErrorResponse = objectMapper.readValue(joinGameMockResponse.contentAsString)
     assert(errorResponse.code == ErrorCode.PLAYERS_LIMIT_EXCEEDED)
-  }
-
-  private fun callCreateGame(request: CreateGameRequestPayload): ResultActionsDsl {
-    return mockMvc.post("/api/v1/games") {
-      content = objectMapper.writeValueAsString(request)
-      contentType = MediaType.APPLICATION_JSON
-    }
-  }
-
-  private fun callJoinGame(request: JoinGameRequestPayload): ResultActionsDsl {
-    return mockMvc.post("/api/v1/game/join") {
-      content = objectMapper.writeValueAsString(request)
-      contentType = MediaType.APPLICATION_JSON
-    }
   }
 
 }

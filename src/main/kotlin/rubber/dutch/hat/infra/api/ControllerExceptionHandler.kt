@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import rubber.dutch.hat.domain.exception.GameNotFoundException
 import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
+import rubber.dutch.hat.domain.exception.UserNotJoinedException
+import rubber.dutch.hat.domain.exception.WordsLimitExceededException
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
@@ -12,13 +14,23 @@ import rubber.dutch.hat.infra.api.dto.ErrorResponse
 class ControllerExceptionHandler {
 
   @ExceptionHandler(GameNotFoundException::class)
-  fun handlePlaceInfoNotFoundException(ex: GameNotFoundException): ResponseEntity<ErrorResponse> {
+  fun handleGameNotFoundException(ex: GameNotFoundException): ResponseEntity<ErrorResponse> {
     return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.GAME_NOT_FOUND))
   }
 
   @ExceptionHandler(PlayersLimitExceededException::class)
-  fun handlePlaceInfoNotFoundException(ex: PlayersLimitExceededException): ResponseEntity<ErrorResponse> {
+  fun handlePlayersLimitExceededException(ex: PlayersLimitExceededException): ResponseEntity<ErrorResponse> {
     return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.PLAYERS_LIMIT_EXCEEDED))
+  }
+
+  @ExceptionHandler(UserNotJoinedException::class)
+  fun handleUserNotJoinedException(ex: UserNotJoinedException): ResponseEntity<ErrorResponse> {
+    return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.USER_NOT_JOINED))
+  }
+
+  @ExceptionHandler(WordsLimitExceededException::class)
+  fun handleWordsLimitExceededException(ex: WordsLimitExceededException): ResponseEntity<ErrorResponse> {
+    return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.WORDS_LIMIT_EXCEEDED))
   }
 
 }

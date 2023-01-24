@@ -3,37 +3,73 @@ package rubber.dutch.hat.domain.model
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import rubber.dutch.hat.domain.exception.UserNotJoinedException
+import rubber.dutch.hat.domain.exception.WordsLimitExceededException
 import java.util.*
 
 @Entity
 @Table(name = "game")
 class Game(
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
-  val id: Long? = null,
-
-  @Column(name="game_id", nullable = false)
-  val gameId: UUID,
+  val id: GameId,
 
   @Column(nullable = false)
   val code: String,
 
   @Column(name = "creator_id")
-  val creatorId: UUID,
+  val creatorId: UserId,
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "config")
   val config: GameConfig,
 
-  @ElementCollection
-  @CollectionTable(name = "game_to_user", joinColumns = [JoinColumn(name = "game_id")])
-  @Column(name = "user_id")
-  val users: MutableSet<UUID> = mutableSetOf()
+  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @JoinColumn(name = "game_id")
+  val players: MutableList<Player> = mutableListOf(),
 
+  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @JoinColumn(name = "game_id")
+  val words: MutableList<WordInGame> = mutableListOf()
 ) {
 
-  fun userIsJoined(userId: UUID): Boolean {
-    return users.contains(userId)
+  fun isUserJoined(userId: UserId): Boolean {
+    return players.any { it.userId == userId }
   }
+
+  fun addPlayer(userId: UserId) {
+    players.add(
+      Player(
+        id = PlayerInternalId(),
+        userId = userId,
+        gameId = id,
+        status = PlayerStatus.NEW,
+        role = PlayerRole.PLAYER,
+      )
+    )
+  }
+
+  fun addWordsToPlayer(userId: UserId, words: List<String>) {
+    val player = players.find { it.userId == userId }
+      ?: throw UserNotJoinedException()
+
+    if (player.words.size + words.size > config.wordsPerPlayer) {
+      throw WordsLimitExceededException()
+    }
+
+    val wordsInGame = words.map {
+      WordInGame(
+        gameId = id,
+        value = it,
+        authorId = player.id.internalId!!,
+        status = WordInGameStatus.AVAILABLE
+      )
+    }
+    player.words.addAll(wordsInGame)
+
+    if (player.words.size == config.wordsPerPlayer) {
+      player.status = PlayerStatus.READY
+    }
+  }
+
 }

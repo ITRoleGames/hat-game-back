@@ -1,12 +1,12 @@
 package rubber.dutch.hat.app.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import java.util.*
+import rubber.dutch.hat.domain.model.UserId
 
 data class CreateGameRequestPayload(
 
   @field:Schema(description = "id пользователя создающего игру")
-  val creatorId: UUID,
+  val creatorId: UserId,
 
   @field:Schema(description = "Количество слов на участника игры")
   val wordsPerPlayer: Int,
