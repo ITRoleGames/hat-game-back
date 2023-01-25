@@ -8,13 +8,21 @@ spring:
     hibernate:
       ddl-auto: create-drop
   datasource:
-    url: jdbc:postgresql://${APP_HOST:localhost}:${DB_PORT:5402}/hat_game
-    username: ${DB_USER:hat_game}
+    url: jdbc:postgresql://${APP_HOST:localhost}:${DB_PORT:5401}/hat_game
+    username: ${DB_USER:hat_user}
     password: ${DB_PASSWORD:test1234}
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: game
-
+  rabbitmq:
+    host: ${APP_HOST:localhost}
+    port: ${RABBIT_MQ_PORT:5672}
+    username: ${RABBIT_MQ_USERNAME:hat_user}
+    password: ${RABBIT_MQ_PASSWORD:test1234}
 app:
   game:
     max-players: 8
+  amqp:
+    gameEvent:
+      exchange: "game-event-exchange"
+      queue: "game-event"
