@@ -8,19 +8,19 @@ import java.util.*
 
 @Component
 class GamePersistenceService(
-  private val gameRepository: GameRepository
+        private val gameRepository: GameRepository
 ) : GameSaver, GameFinder {
 
-  override fun save(game: Game): Game {
-    return gameRepository.save(game)
-  }
+    override fun save(game: Game): Game {
+        return gameRepository.save(game)
+    }
 
-  override fun findById(id: UUID): Game? {
-    return gameRepository.findById(id).orElse(null)
-  }
+    override fun findById(id: UUID): Game? {
+        return gameRepository.findById(id).orElse(null)
+    }
 
-  override fun findByCode(code: String): Game? {
-    return gameRepository.findByCode(code)
-  }
+    override fun findByCode(code: String): Game? {
+        return gameRepository.findByCode(code)
+    }
 
 }
