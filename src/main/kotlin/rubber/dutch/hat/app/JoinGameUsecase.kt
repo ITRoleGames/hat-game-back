@@ -22,6 +22,7 @@ class JoinGameUsecase(
     if (!game.isUserJoined(payload.userId)) {
       gameUserManager.joinUserToGame(payload.userId, game)
     }
+    return game.toGameResponse()
 
     eventSender.send(GameUpdatedEvent(game.id))
 
