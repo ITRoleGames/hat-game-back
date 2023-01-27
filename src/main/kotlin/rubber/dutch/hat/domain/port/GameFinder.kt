@@ -8,5 +8,4 @@ interface GameFinder {
   fun findById(id: UUID) : Game?
 
   fun findByCode(code: String) : Game?
-
 }

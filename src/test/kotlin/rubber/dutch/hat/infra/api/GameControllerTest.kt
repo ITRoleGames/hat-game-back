@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
+import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.GameConfigProperties
 import rubber.dutch.hat.domain.model.UserId
@@ -17,6 +18,25 @@ class GameControllerTest : BaseApplicationTest() {
 
   @Autowired
   private lateinit var gameConfigProperties: GameConfigProperties
+
+    @Test
+    fun `get game success`() {
+        val userId = UserId(randomUUID())
+
+        val mockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
+                .andReturn().response
+        val createGameResponse: GameResponse = objectMapper.readValue(mockResponse.contentAsString)
+
+        callGetGame(createGameResponse.id, userId)
+                .andExpect {
+                    status { isOk() }
+                    content { contentType(MediaType.APPLICATION_JSON) }
+                    jsonPath("id") {value(createGameResponse.id.toString()) }
+                    jsonPath("code") { value(createGameResponse.code) }
+                    jsonPath("wordsPerPlayer") { value(10) }
+                    jsonPath("moveTime") { value(30) }
+                }
+    }
 
   @Test
   fun `WHEN create game THAN success`() {

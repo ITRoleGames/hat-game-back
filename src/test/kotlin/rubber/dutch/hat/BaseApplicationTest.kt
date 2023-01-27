@@ -9,6 +9,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActionsDsl
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.Wait
@@ -16,6 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
+import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,4 +69,9 @@ class BaseApplicationTest {
     return objectMapper.readValue(mockHttpServletResponse.contentAsString, GameResponse::class.java)
   }
 
+  protected fun callGetGame(gameId: GameId, userId: UserId): ResultActionsDsl {
+    return mockMvc.get("/api/v1/games/$gameId") {
+      header("user-id", userId)
+    }
+  }
 }
