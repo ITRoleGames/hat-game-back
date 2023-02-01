@@ -10,66 +10,70 @@ import java.util.*
 @Entity
 @Table(name = "game")
 class Game(
-  @Id
-  @Column(name = "id", nullable = false)
-  val id: GameId,
+    @Id
+    @Column(name = "id", nullable = false)
+    val id: GameId,
 
-  @Column(nullable = false)
-  val code: String,
+    @Column(nullable = false)
+    val code: String,
 
-  @Column(name = "creator_id")
-  val creatorId: UserId,
+    @Column(name = "creator_id")
+    val creatorId: UserId,
 
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(name = "config")
-  val config: GameConfig,
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "config")
+    val config: GameConfig,
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @JoinColumn(name = "game_id")
-  val players: MutableList<Player> = mutableListOf(),
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    val players: MutableList<Player> = mutableListOf(),
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @JoinColumn(name = "game_id")
-  val words: MutableList<WordInGame> = mutableListOf()
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    val words: MutableList<WordInGame> = mutableListOf(),
+
+    //todo: возможно не так))
+    @Column(name = "next_player_id")
+    var nextPlayerId: Long? = null
 ) {
 
-  fun isUserJoined(userId: UserId): Boolean {
-    return players.any { it.userId == userId }
-  }
-
-  fun addPlayer(userId: UserId) {
-    players.add(
-      Player(
-        id = PlayerInternalId(),
-        userId = userId,
-        gameId = id,
-        status = PlayerStatus.NEW,
-        role = PlayerRole.PLAYER,
-      )
-    )
-  }
-
-  fun addWordsToPlayer(userId: UserId, words: List<String>) {
-    val player = players.find { it.userId == userId }
-      ?: throw UserNotJoinedException()
-
-    if (player.words.size + words.size > config.wordsPerPlayer) {
-      throw WordsLimitExceededException()
+    fun isUserJoined(userId: UserId): Boolean {
+        return players.any { it.userId == userId }
     }
 
-    val wordsInGame = words.map {
-      WordInGame(
-        gameId = id,
-        value = it,
-        authorId = player.id.internalId!!,
-        status = WordInGameStatus.AVAILABLE
-      )
+    fun addPlayer(userId: UserId) {
+        players.add(
+            Player(
+                id = PlayerInternalId(),
+                userId = userId,
+                gameId = id,
+                status = PlayerStatus.NEW,
+                role = PlayerRole.PLAYER,
+            )
+        )
     }
-    player.words.addAll(wordsInGame)
 
-    if (player.words.size == config.wordsPerPlayer) {
-      player.status = PlayerStatus.READY
+    fun addWordsToPlayer(userId: UserId, words: List<String>) {
+        val player = players.find { it.userId == userId }
+            ?: throw UserNotJoinedException()
+
+        if (player.words.size + words.size > config.wordsPerPlayer) {
+            throw WordsLimitExceededException()
+        }
+
+        val wordsInGame = words.map {
+            WordInGame(
+                gameId = id,
+                value = it,
+                authorId = player.id.internalId!!,
+                status = WordInGameStatus.AVAILABLE
+            )
+        }
+        player.words.addAll(wordsInGame)
+
+        if (player.words.size == config.wordsPerPlayer) {
+            player.status = PlayerStatus.READY
+        }
     }
-  }
 
 }

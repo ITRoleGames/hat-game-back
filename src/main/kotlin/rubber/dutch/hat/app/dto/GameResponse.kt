@@ -19,15 +19,18 @@ data class GameResponse(
         val moveTime: Int,
 
         @field:Schema(description = "Игроки")
-        val players: List<PlayerDto>
+        val players: List<PlayerDto>,
+
+        val nextPlayerId: Long
 )
 
 fun Game.toGameResponse(): GameResponse {
     return GameResponse(
-            id = id,
-            code = code,
-            wordsPerPlayer = config.wordsPerPlayer,
-            moveTime = config.moveTime,
-            players = players.map(Player::toDto)
+        id = id,
+        code = code,
+        wordsPerPlayer = config.wordsPerPlayer,
+        moveTime = config.moveTime,
+        players = players.map(Player::toDto),
+        nextPlayerId = nextPlayerId ?: -1
     )
 }
