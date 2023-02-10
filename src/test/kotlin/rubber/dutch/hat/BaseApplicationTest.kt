@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActionsDsl
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Testcontainers
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
@@ -36,6 +37,10 @@ class BaseApplicationTest {
     private val postgreSQLContainer =
       PostgreSQLContainer("postgres:15-alpine").waitingFor(Wait.defaultWaitStrategy()).apply { start() }
 
+    @JvmStatic
+    private val rabbitMQContainer =
+        RabbitMQContainer("rabbitmq:3.9.20-management-alpine").apply { start() }
+
     @DynamicPropertySource
     @JvmStatic
     fun initProperties(registry: DynamicPropertyRegistry) {
@@ -43,6 +48,11 @@ class BaseApplicationTest {
       registry.add("spring.datasource.username") { postgreSQLContainer.username }
       registry.add("spring.datasource.password") { postgreSQLContainer.password }
       registry.add("spring.datasource.driverClassName") { "org.testcontainers.jdbc.ContainerDatabaseDriver" }
+      registry.add("spring.rabbitmq.host") { rabbitMQContainer.host }
+      registry.add("spring.rabbitmq.port") { rabbitMQContainer.amqpPort }
+      registry.add("spring.rabbitmq.username") { "guest" }
+      registry.add("spring.rabbitmq.password") { "guest" }
+      registry.add("spring.rabbitmq.vhost") { "/" }
     }
   }
 
