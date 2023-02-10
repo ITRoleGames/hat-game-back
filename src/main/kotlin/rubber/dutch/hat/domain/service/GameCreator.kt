@@ -5,11 +5,11 @@ import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.GameConfig
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
-import rubber.dutch.hat.domain.port.GameSaver
+import rubber.dutch.hat.domain.port.GameRepository
 import java.util.*
 
 @Component
-class GameCreator(private val gameSaver: GameSaver) {
+class GameCreator(private val gameRepository: GameRepository) {
 
   fun createGame(creatorId: UserId, config: GameConfig): Game {
     val game = Game(
@@ -20,7 +20,7 @@ class GameCreator(private val gameSaver: GameSaver) {
     ).also {
       it.addPlayer(creatorId)
     }
-    return gameSaver.save(game)
+    return gameRepository.save(game)
   }
 
   private fun generateCode(): String {

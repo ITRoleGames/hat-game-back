@@ -3,6 +3,7 @@ package rubber.dutch.hat.domain.model
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
 import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.exception.WordsLimitExceededException
 import java.util.*
@@ -33,20 +34,23 @@ class Game(
   val words: MutableList<WordInGame> = mutableListOf()
 ) {
 
-  fun isUserJoined(userId: UserId): Boolean {
-    return players.any { it.userId == userId }
-  }
-
   fun addPlayer(userId: UserId) {
-    players.add(
-      Player(
-        id = PlayerInternalId(),
-        userId = userId,
-        gameId = id,
-        status = PlayerStatus.NEW,
-        role = PlayerRole.PLAYER,
+      val isUserJoined = players.any { it.userId == userId }
+      if (isUserJoined) {
+          return
+      }
+      if (players.size >= MAX_PLAYERS_COUNT) {
+          throw PlayersLimitExceededException()
+      }
+      players.add(
+          Player(
+              id = PlayerInternalId(),
+              userId = userId,
+              gameId = id,
+              status = PlayerStatus.NEW,
+              role = PlayerRole.PLAYER,
+          )
       )
-    )
   }
 
   fun addWordsToPlayer(userId: UserId, words: List<String>) {
@@ -71,5 +75,9 @@ class Game(
       player.status = PlayerStatus.READY
     }
   }
+
+    companion object {
+        const val MAX_PLAYERS_COUNT = 8
+    }
 
 }
