@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration
 class AmqpConfig {
 
     companion object {
-        const val QUEUE_NAME = "game-update-event"
+        const val GAME_EVENT_QUEUE_NAME = "game-update-event"
     }
 
     @Bean
     fun queue(): Queue {
-        return Queue(QUEUE_NAME, false)
+        return Queue(GAME_EVENT_QUEUE_NAME, false)
     }
 
     @Bean

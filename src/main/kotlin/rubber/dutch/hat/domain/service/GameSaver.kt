@@ -11,7 +11,7 @@ class GameSaver(private val gameRepository: GameRepository, private val eventSen
 
     fun saveAndNotify(game: Game): Game {
         return gameRepository.save(game).also {
-            eventSender.send(GameUpdatedEvent(game.id))
+            eventSender.send(GameUpdatedEvent(game.id.gameId))
         }
     }
 }

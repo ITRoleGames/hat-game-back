@@ -9,6 +9,6 @@ import rubber.dutch.hat.domain.port.EventSender
 class AmqpEventSender(private val amqpTemplate: AmqpTemplate) : EventSender {
 
     override fun send(event: GameEvent) {
-        amqpTemplate.convertAndSend(AmqpConfig.QUEUE_NAME, event)
+        amqpTemplate.convertAndSend(AmqpConfig.GAME_EVENT_QUEUE_NAME, event)
     }
 }
