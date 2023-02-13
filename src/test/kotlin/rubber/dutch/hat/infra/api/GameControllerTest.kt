@@ -24,18 +24,18 @@ class GameControllerTest : BaseApplicationTest() {
         val userId = UserId(randomUUID())
 
         val mockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
-                .andReturn().response
+            .andReturn().response
         val createGameResponse: GameResponse = objectMapper.readValue(mockResponse.contentAsString)
 
         callGetGame(createGameResponse.id, userId)
-                .andExpect {
-                    status { isOk() }
-                    content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("id") {value(createGameResponse.id.toString()) }
-                    jsonPath("code") { value(createGameResponse.code) }
-                    jsonPath("wordsPerPlayer") { value(10) }
-                    jsonPath("moveTime") { value(30) }
-                }
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("id") { value(createGameResponse.id.gameId.toString()) }
+                jsonPath("code") { value(createGameResponse.code) }
+                jsonPath("wordsPerPlayer") { value(10) }
+                jsonPath("moveTime") { value(30) }
+            }
     }
 
   @Test
