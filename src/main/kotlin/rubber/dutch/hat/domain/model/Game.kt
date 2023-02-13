@@ -76,8 +76,4 @@ class Game(
     }
   }
 
-    companion object {
-        const val MAX_PLAYERS_COUNT = 8
-    }
-
 }

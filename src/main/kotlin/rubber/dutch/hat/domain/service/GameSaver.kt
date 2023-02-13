@@ -9,7 +9,7 @@ import rubber.dutch.hat.domain.port.GameRepository
 @Component
 class GameSaver(private val gameRepository: GameRepository, private val eventSender: EventSender) {
 
-    fun save(game: Game): Game {
+    fun saveAndNotify(game: Game): Game {
         return gameRepository.save(game).also {
             eventSender.send(GameUpdatedEvent(game.id))
         }

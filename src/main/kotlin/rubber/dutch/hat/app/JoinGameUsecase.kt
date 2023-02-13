@@ -17,7 +17,7 @@ class JoinGameUsecase(
   fun execute(payload: JoinGameRequestPayload): GameResponse {
     val game = gameProvider.findByCode(payload.code) ?: throw GameNotFoundException()
     game.addPlayer(payload.userId)
-    gameSaver.save(game)
+    gameSaver.saveAndNotify(game)
     return game.toGameResponse()
   }
 
