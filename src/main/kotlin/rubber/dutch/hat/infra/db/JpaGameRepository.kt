@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import rubber.dutch.hat.domain.model.Game
 import java.util.*
 
-interface GameRepository : JpaRepository<Game, UUID> {
+interface JpaGameRepository : JpaRepository<Game, UUID> {
 
-  fun findByCode(code: String): Game?
+    fun findByCode(code: String): Game?
 }

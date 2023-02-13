@@ -5,25 +5,19 @@ import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.app.dto.toGameResponse
 import rubber.dutch.hat.domain.exception.GameNotFoundException
-import rubber.dutch.hat.domain.model.event.GameUpdatedEvent
-import rubber.dutch.hat.domain.port.EventSender
 import rubber.dutch.hat.domain.service.GameProvider
-import rubber.dutch.hat.domain.service.GameUserManager
+import rubber.dutch.hat.domain.service.GameSaver
 
 @Component
 class JoinGameUsecase(
         private val gameProvider: GameProvider,
-        private val gameUserManager: GameUserManager,
-        private val eventSender: EventSender
+        private val gameSaver: GameSaver
 ) {
 
   fun execute(payload: JoinGameRequestPayload): GameResponse {
     val game = gameProvider.findByCode(payload.code) ?: throw GameNotFoundException()
-    if (!game.isUserJoined(payload.userId)) {
-      gameUserManager.joinUserToGame(payload.userId, game)
-    }
-    eventSender.send(GameUpdatedEvent(game.id.gameId))
-
+    game.addPlayer(payload.userId)
+    gameSaver.saveAndNotify(game)
     return game.toGameResponse()
   }
 

@@ -19,7 +19,3 @@ spring:
     port: 5672
     username: guest
     password: guest
-
-app:
-  game:
-    max-players: 8

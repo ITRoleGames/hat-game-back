@@ -2,22 +2,18 @@ package rubber.dutch.hat.infra.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
-import rubber.dutch.hat.domain.GameConfigProperties
+import rubber.dutch.hat.domain.model.MAX_PLAYERS_COUNT
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.UUID.randomUUID
 
 class GameControllerTest : BaseApplicationTest() {
-
-  @Autowired
-  private lateinit var gameConfigProperties: GameConfigProperties
 
     @Test
     fun `get game success`() {
@@ -83,7 +79,7 @@ class GameControllerTest : BaseApplicationTest() {
     val userId = UserId(randomUUID())
     val gameDto = createGame(userId)
 
-    repeat(gameConfigProperties.maxPlayers - 1) {
+    repeat(MAX_PLAYERS_COUNT - 1) {
       callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = UserId(randomUUID())))
         .andExpect {
           status { isOk() }
