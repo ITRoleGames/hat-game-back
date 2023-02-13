@@ -2,6 +2,7 @@ package rubber.dutch.hat.infra.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.awaitility.Awaitility.await
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import rubber.dutch.hat.BaseApplicationTest
@@ -74,10 +75,10 @@ class GameControllerTest : BaseApplicationTest() {
         joinGame(JoinGameRequestPayload(code = gameDto.code, userId = userId))
 
         await().atMost(10, TimeUnit.SECONDS).until { gameEventListener.getEvents().size > 0 }
-        assert(gameEventListener.getEvents().size == 1)
+        assertEquals(1, gameEventListener.getEvents().size)
 
-        assert(gameEventListener.getEvents()[0].type == GameEventType.GAME_UPDATED)
-        assert(gameEventListener.getEvents()[0].gameId == gameDto.id.gameId)
+        assertEquals(GameEventType.GAME_UPDATED, gameEventListener.getEvents()[0].type)
+        assertEquals(gameDto.id.gameId, gameEventListener.getEvents()[0].gameId)
     }
 
     @Test
@@ -88,7 +89,7 @@ class GameControllerTest : BaseApplicationTest() {
             }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(mockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.GAME_NOT_FOUND)
+        assertEquals(ErrorCode.GAME_NOT_FOUND, errorResponse.code)
     }
 
     @Test
@@ -110,7 +111,6 @@ class GameControllerTest : BaseApplicationTest() {
                 }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(joinGameMockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.PLAYERS_LIMIT_EXCEEDED)
+        assertEquals(ErrorCode.PLAYERS_LIMIT_EXCEEDED, errorResponse.code)
     }
-
 }

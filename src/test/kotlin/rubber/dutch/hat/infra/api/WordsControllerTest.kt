@@ -2,6 +2,7 @@ package rubber.dutch.hat.infra.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.awaitility.Awaitility
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.ResultActionsDsl
@@ -38,10 +39,10 @@ class WordsControllerTest : BaseApplicationTest() {
         addRandomWords(userId, gameDto.id, gameDto.wordsPerPlayer)
 
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until { gameEventListener.getEvents().size > 0 }
-        assert(gameEventListener.getEvents().size == 1)
+        assertEquals(1, gameEventListener.getEvents().size)
 
-        assert(gameEventListener.getEvents()[0].type == GameEventType.GAME_UPDATED)
-        assert(gameEventListener.getEvents()[0].gameId == gameDto.id.gameId)
+        assertEquals(GameEventType.GAME_UPDATED, gameEventListener.getEvents()[0].type)
+        assertEquals(gameDto.id.gameId, gameEventListener.getEvents()[0].gameId)
     }
 
     @Test
@@ -56,7 +57,7 @@ class WordsControllerTest : BaseApplicationTest() {
         }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(mockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.USER_NOT_JOINED)
+        assertEquals(ErrorCode.USER_NOT_JOINED, errorResponse.code)
     }
 
     @Test
@@ -71,7 +72,7 @@ class WordsControllerTest : BaseApplicationTest() {
         }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(mockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.WORDS_LIMIT_EXCEEDED)
+        assertEquals(ErrorCode.WORDS_LIMIT_EXCEEDED, errorResponse.code)
     }
 
     private fun addRandomWords(userId: UserId, gameId: GameId, wordsCount: Int) {
@@ -92,5 +93,4 @@ class WordsControllerTest : BaseApplicationTest() {
             contentType = MediaType.APPLICATION_JSON
         }
     }
-
 }
