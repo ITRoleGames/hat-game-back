@@ -91,13 +91,27 @@ class GameController(
         return joinGameUsecase.execute(payload)
     }
 
-    //todo: swagger doc
-    @PostMapping("/games/{gameId}/startGame")
+    @Operation(
+        summary = "Жеребьевка, создание комманд",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Команды созданы"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
+    )
+    @PostMapping("/games/{gameId}/createteams")
     fun createTeams(
         @PathVariable gameId: GameId,
         @RequestHeader("user-id") currentUserId: UserId
     ): GameResponse {
         return startGameUsecase.execute(gameId)
     }
+
+
 
 }
