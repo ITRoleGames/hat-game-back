@@ -14,7 +14,3 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: game
-
-app:
-  game:
-    max-players: 8
