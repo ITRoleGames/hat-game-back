@@ -6,7 +6,6 @@ import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
 import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.exception.WordsLimitExceededException
-import java.util.*
 
 @Entity
 @Table(name = "game")
@@ -24,6 +23,9 @@ class Game(
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "config")
   val config: GameConfig,
+
+  @Column(name = "status")
+  var status: GameStatus,
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @JoinColumn(name = "game_id")
@@ -75,5 +77,10 @@ class Game(
       player.status = PlayerStatus.READY
     }
   }
+}
 
+enum class GameStatus{
+    NEW,
+    STARTED,
+    FINISHED
 }

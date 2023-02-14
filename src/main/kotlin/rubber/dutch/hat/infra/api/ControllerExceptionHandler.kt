@@ -3,10 +3,7 @@ package rubber.dutch.hat.infra.api
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import rubber.dutch.hat.domain.exception.GameNotFoundException
-import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
-import rubber.dutch.hat.domain.exception.UserNotJoinedException
-import rubber.dutch.hat.domain.exception.WordsLimitExceededException
+import rubber.dutch.hat.domain.exception.*
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 
@@ -33,4 +30,8 @@ class ControllerExceptionHandler {
     return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.WORDS_LIMIT_EXCEEDED))
   }
 
+    @ExceptionHandler(GameStatusException::class)
+    fun handleWordsLimitExceededException(ex: GameStatusException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_GAME_STATUS))
+    }
 }
