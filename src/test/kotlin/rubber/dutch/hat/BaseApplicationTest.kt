@@ -57,8 +57,8 @@ class BaseApplicationTest {
             registry.add("spring.datasource.driverClassName") { "org.testcontainers.jdbc.ContainerDatabaseDriver" }
             registry.add("spring.rabbitmq.host") { rabbitMQContainer.host }
             registry.add("spring.rabbitmq.port") { rabbitMQContainer.amqpPort }
-            registry.add("spring.rabbitmq.username") { "guest" }
-            registry.add("spring.rabbitmq.password") { "guest" }
+            registry.add("spring.rabbitmq.username") { rabbitMQContainer.adminUsername }
+            registry.add("spring.rabbitmq.password") { rabbitMQContainer.adminPassword }
             registry.add("spring.rabbitmq.vhost") { "/" }
         }
     }
