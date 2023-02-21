@@ -7,15 +7,21 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
+/**
+ * Судя по последней схеме этот не нужен
+ */
 @Entity
 @Table(name = "team")
 class Team (
     @Id
     @Column(name = "id", nullable = false)
-    val id: TeamId,
+    val id: Long,
+
+    @Column(name = "game_id", nullable = false)
+    val gameId: GameId,
 
     @Column(name = "team_number")
-    val teamNumber: Int,
+    val teamNumber: Long,
 
     @Column(name = "next_user")
     val nextUserId: UserId,

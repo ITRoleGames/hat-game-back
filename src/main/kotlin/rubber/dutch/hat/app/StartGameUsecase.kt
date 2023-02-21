@@ -37,7 +37,8 @@ class StartGameUsecase(
     fun execute(gameId: GameId): GameResponse {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
 
-        var teamId = 0
+        var teamId = 0L
+        val moves = mutableMapOf<Int, Int>() //Для формирования списка порядка ходов
         //TODO: можно убрать дублирование кода
         if (game.players.size % teamSize != 0) {
             //Количество игроков НЕ делится на количество игроков в команде без остатка
@@ -46,7 +47,10 @@ class StartGameUsecase(
                     && it.index != (game.players.size - 1)) { //В таком случае последний игрок попадает в ту же команду что и предыдущие 2 игрока
                     teamId++
                 }
-                it.value.teamId = teamId.toString()
+                it.value.teamId = teamId
+
+                //Добавляем игрока к формированию подряка ходов
+                moves[it.index] = (it.index % teamSize)
             }
         } else {
             //Количество игроков делится на количество игроков в команде без остатка
@@ -54,13 +58,23 @@ class StartGameUsecase(
                 if (it.index % teamSize == 0) {
                     teamId++
                 }
-                it.value.teamId = teamId.toString()
+                it.value.teamId = teamId
+
+                //Добавляем игрока к формированию подряка ходов
+                moves[it.index] = (it.index % teamSize)
             }
         }
 
+        //TODO: Заполняем комманды
+
         //todo: добавить время начала игры
         //todo: добавить порядок игроков нормально + придумать как этот порядок будет использоваться
-        game.players.withIndex().forEach { it.value.moveOrder = it.index }
+        //Берем список игроков и код команды и это дело сортируем по коду команды
+        val sortedMoves = moves.toList()
+            .sortedBy { (_, value) -> value}.withIndex().toList()
+        //Проставляем порядок ходов игроков
+        game.players.withIndex().forEach {
+            it.value.moveOrder = sortedMoves.get(it.index).value.first }
 
         game.nextPlayerId = game.players.find { p -> p.moveOrder == 0 }?.id?.internalId ?: throw IllegalStateException()
 

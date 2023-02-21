@@ -104,14 +104,11 @@ class GameController(
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )]
     )
-    @PostMapping("/games/{gameId}/createteams")
+    @PostMapping("/games/{gameId}/startGame")
     fun createTeams(
         @PathVariable gameId: GameId,
         @RequestHeader("user-id") currentUserId: UserId
     ): GameResponse {
         return startGameUsecase.execute(gameId)
     }
-
-
-
 }

@@ -1,9 +1,7 @@
 package rubber.dutch.hat.app.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import rubber.dutch.hat.domain.model.Game
-import rubber.dutch.hat.domain.model.GameId
-import rubber.dutch.hat.domain.model.Player
+import rubber.dutch.hat.domain.model.*
 
 data class GameResponse(
         @field:Schema(description = "id игры")
@@ -21,7 +19,14 @@ data class GameResponse(
         @field:Schema(description = "Игроки")
         val players: List<PlayerDto>,
 
-        val nextPlayerId: Long
+        @field:Schema(description = "Идентификатов следующего игрока")
+        val nextPlayerId: Long,
+
+        @field:Schema(description = "Команды")
+        val teams: List<TeamDto>,
+
+        @field:Schema(description = "Слова")
+        val words: List<WordDto>
 )
 
 fun Game.toGameResponse(): GameResponse {
@@ -31,6 +36,8 @@ fun Game.toGameResponse(): GameResponse {
         wordsPerPlayer = config.wordsPerPlayer,
         moveTime = config.moveTime,
         players = players.map(Player::toDto),
-        nextPlayerId = nextPlayerId ?: -1
+        nextPlayerId = nextPlayerId ?: -1,
+        teams = teams.map(Team::toDto),
+        words = words.map(WordInGame::toDto)
     )
 }
