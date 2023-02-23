@@ -9,8 +9,9 @@ import java.util.*
 class Round(
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: UUID,
+    val id: RoundId,
 
     @Column(name = "explainer_id", nullable = false)
     val explainerId: PlayerInternalId,
@@ -20,13 +21,13 @@ class Round(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "explanation_id")
-    val explanation: MutableList<Explanation> = mutableListOf(),
+    var explanation: MutableList<Explanation> = mutableListOf(),
 
     @Column(name = "start_time", nullable = false)
-    val startTime: Instant,
+    val startTime: Instant = Instant.now(),
 
     @Column(name = "status")
-    val status: RoundStatus?
+    var status: RoundStatus = RoundStatus.STARTED
 )
 
 enum class RoundStatus {

@@ -8,23 +8,24 @@ import java.util.*
 @Table(name = "explanation")
 class Explanation(
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: UUID,
+    val id: Long,
 
     @Column(name = "round_id")
     val roundId: RoundId,
 
     @Column(name = "word_id")
-    val wordInGameId: UUID,
+    val wordInGameId: Long,
 
     @Column(name = "start_time")
-    val startTime: Instant,
+    val startTime: Instant = Instant.now(),
 
     @Column(name = "end_time")
-    val endTime: Instant,
+    var endTime: Instant,
 
     @Column(name = "result")
-    val status: ExplanationResult?
+    var status: ExplanationResult?
 )
 
 enum class ExplanationResult {

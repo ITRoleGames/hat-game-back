@@ -4,8 +4,11 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
+import rubber.dutch.hat.domain.exception.RoundStatusException
 import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.exception.WordsLimitExceededException
+import java.time.Instant
+import kotlin.math.round
 
 @Entity
 @Table(name = "game")
@@ -33,12 +36,15 @@ class Game(
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @JoinColumn(name = "game_id")
-  val words: MutableList<WordInGame> = mutableListOf()
+  val words: MutableList<WordInGame> = mutableListOf(),
+
+  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+  @JoinColumn(name = "game_id")
+  var rounds: MutableList<Round> = mutableListOf()
 ) {
 
   fun addPlayer(userId: UserId) {
-      val isUserJoined = players.any { it.userId == userId }
-      if (isUserJoined) {
+      if (isUserInGame(userId)) {
           return
       }
       if (players.size >= MAX_PLAYERS_COUNT) {
@@ -77,9 +83,28 @@ class Game(
       player.status = PlayerStatus.READY
     }
   }
+
+  fun isUserInGame(userId: UserId): Boolean {
+      return players.any { it.userId == userId }
+  }
+
+  fun addNewRound(playerId: PlayerInternalId, gameId: GameId) {
+      if (rounds.any { it.status == RoundStatus.STARTED }) {
+          throw RoundStatusException()
+      }
+      rounds.add(Round(
+          id = RoundId(),
+          explainerId = playerId,
+          gameId = gameId
+      ))
+    }
+
+  fun getLastRound(): Round? {
+      return rounds.maxByOrNull { it.startTime }
+  }
 }
 
-enum class GameStatus{
+enum class GameStatus {
     NEW,
     STARTED,
     FINISHED

@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateGameUsecase
 import rubber.dutch.hat.app.GetGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
-import rubber.dutch.hat.app.StartRoundUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
-import rubber.dutch.hat.app.dto.RoundResponseDto
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
@@ -27,8 +25,7 @@ import java.util.UUID
 class GameController(
         private val getGameUsecase: GetGameUsecase,
         private val createGameUsecase: CreateGameUsecase,
-        private val joinGameUsecase: JoinGameUsecase,
-        private val startRoundUsecase: StartRoundUsecase
+        private val joinGameUsecase: JoinGameUsecase
 ) {
     @Operation(
             summary = "Получить игру по ID",
@@ -91,10 +88,4 @@ class GameController(
   ): GameResponse {
     return joinGameUsecase.execute(payload)
   }
-
-    @PostMapping("/game/{game_id}/players/{player_id}/start_round")
-    fun startRound(@PathVariable("game_id") gameId : UUID,
-                   @PathVariable("player_id") playerId : Long): RoundResponseDto {
-        return startRoundUsecase.execute(gameId, playerId)
-    }
 }

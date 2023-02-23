@@ -8,14 +8,14 @@ import java.util.*
 
 @Component
 class RoundCreator(private val roundSaver: RoundRepository) {
-    fun createRound(gameId: GameId, playerId: PlayerInternalId): Round {
-        val round = Round(
-            id = UUID.randomUUID(),
-            explainerId = playerId,
-            gameId = gameId,
-            startTime = Instant.now(),
-            status = RoundStatus.STARTED
-        )
-        return roundSaver.save(round)
-    }
+//    fun createRound(gameId: GameId, playerId: PlayerInternalId): Round {
+//        val round = Round(
+//            id = RoundId(),
+//            explainerId = playerId,
+//            gameId = gameId,
+//            startTime = Instant.now(),
+//            status = RoundStatus.STARTED
+//        )
+//        return roundSaver.save(round)
+//    }
 }
