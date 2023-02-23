@@ -69,9 +69,9 @@ class BaseApplicationTest {
     return objectMapper.readValue(mockHttpServletResponse.contentAsString, GameResponse::class.java)
   }
 
-  protected fun callGetGame(gameId: GameId, userId: UserId): ResultActionsDsl {
-    return mockMvc.get("/api/v1/games/$gameId") {
-      header("user-id", userId)
+    protected fun callGetGame(gameId: GameId, userId: UserId): ResultActionsDsl {
+        return mockMvc.get("/api/v1/games/${gameId.gameId}") {
+            header("user-id", userId.userId)
+        }
     }
-  }
 }

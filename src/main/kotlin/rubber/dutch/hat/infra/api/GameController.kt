@@ -19,6 +19,7 @@ import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1")
@@ -47,8 +48,8 @@ class GameController(
             )]
     )
     @GetMapping("/games/{id}")
-    fun getGame(@PathVariable id: GameId, @RequestHeader("user-id") currentUserId: UserId): GameResponse {
-        return getGameUsecase.execute(id, currentUserId)
+    fun getGame(@PathVariable id: UUID, @RequestHeader("user-id") currentUserId: UUID): GameResponse {
+        return getGameUsecase.execute(GameId(id), UserId(currentUserId))
     }
 
     @Operation(
