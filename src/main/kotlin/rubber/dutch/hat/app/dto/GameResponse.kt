@@ -37,7 +37,19 @@ fun Game.toGameResponse(): GameResponse {
         moveTime = config.moveTime,
         players = players.map(Player::toDto),
         nextPlayerId = nextPlayerId ?: -1,
-        teams = teams.map(Team::toDto),
+        teams = makeTeams(players),
         words = words.map(WordInGame::toDto)
     )
+}
+
+fun makeTeams(player: MutableList<Player>): List<TeamDto> {
+    return player.map{
+        val currentTeamId = it.teamId
+        TeamDto(id = it.teamId,
+            teamNumber = it.teamId,
+            userIds = player
+                .filter{ it.teamId == currentTeamId }
+                .map{ it.userId }
+        )
+    }
 }

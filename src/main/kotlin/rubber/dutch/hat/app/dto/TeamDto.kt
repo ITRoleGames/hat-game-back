@@ -7,11 +7,3 @@ data class TeamDto (
     val teamNumber: Long,
     val userIds: List<UserId>
 )
-
-fun Team.toDto(): TeamDto {
-    return TeamDto(
-        id = id,
-        teamNumber = teamNumber,
-        userIds = users
-    )
-}

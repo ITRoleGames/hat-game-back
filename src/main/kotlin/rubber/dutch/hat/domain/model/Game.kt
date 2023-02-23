@@ -30,10 +30,6 @@ class Game(
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "game_id")
-    val teams: MutableList<Team> = mutableListOf(),
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "game_id")
     val words: MutableList<WordInGame> = mutableListOf(),
 
     //todo: возможно не так))
