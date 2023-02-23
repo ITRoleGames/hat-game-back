@@ -5,7 +5,7 @@ import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.toGameResponse
 import rubber.dutch.hat.domain.exception.GameNotFoundException
 import rubber.dutch.hat.domain.model.GameId
-import rubber.dutch.hat.domain.port.GameSaver
+import rubber.dutch.hat.domain.port.GameRepository
 import rubber.dutch.hat.domain.service.GameProvider
 
 const val teamSize = 2
@@ -31,7 +31,7 @@ const val teamSize = 2
 @Component
 class StartGameUsecase(
     private val gameProvider: GameProvider,
-    private val gameSaver: GameSaver,
+    private val gameRepository: GameRepository,
 ) {
 
     fun execute(gameId: GameId): GameResponse {
@@ -76,6 +76,6 @@ class StartGameUsecase(
 
         game.nextPlayerId = game.players.find { p -> p.moveOrder == 0 }?.id?.internalId ?: throw IllegalStateException()
 
-        return gameSaver.save(game).toGameResponse()
+        return gameRepository.save(game).toGameResponse()
     }
 }
