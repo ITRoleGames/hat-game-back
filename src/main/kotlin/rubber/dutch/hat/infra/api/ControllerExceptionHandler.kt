@@ -32,7 +32,7 @@ class ControllerExceptionHandler {
 
     @ExceptionHandler(GameStatusException::class)
     fun handleWordsLimitExceededException(ex: GameStatusException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.ILLEGAL_GAME_STATUS_FOR_OPERATION))
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_GAME_STATUS))
     }
 
     @ExceptionHandler(OperationNotPermittedException::class)
