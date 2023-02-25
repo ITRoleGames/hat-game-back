@@ -23,7 +23,7 @@ internal class GameCreatorTest {
     lateinit var gameCreator: GameCreator
 
     @Test
-    fun createGame() {
+    fun createGame_Success() {
         `when`(gameRepository.save(any())).then { it.arguments.first() }
         val game = gameCreator.createGame(
             UserId(UUID.randomUUID()),
