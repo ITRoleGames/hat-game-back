@@ -8,6 +8,7 @@ plugins {
 	kotlin("plugin.spring") version "1.7.21"
 	kotlin("jvm") version "1.7.21"
 	id("io.gitlab.arturbosch.detekt") version "1.22.0"
+	id("jacoco")
 }
 
 allOpen {
@@ -55,6 +56,23 @@ tasks.getByName<Jar>("jar") {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.required.set(false)
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.7"
 }
 
 detekt {
