@@ -3,59 +3,117 @@ package rubber.dutch.hat.app
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
 import rubber.dutch.hat.domain.model.*
-import rubber.dutch.hat.domain.port.GameSaver
 import rubber.dutch.hat.domain.service.GameProvider
+import rubber.dutch.hat.domain.service.GameSaver
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
-import org.mockito.kotlin.any
 
 internal class StartGameUsecaseTest {
 
     @Test
-    fun `WHEN 8 player 4 teams`() {
+    fun execute_8_payers_4_teams() {
         val gameProvider = mock(GameProvider::class.java)
         val gameSaver = mock(GameSaver::class.java)
 
+        val userId = UserId(UUID.randomUUID())
         val gameId = GameId(UUID.randomUUID())
-        val userCase = StartGameUsecase(gameProvider, gameSaver)
+        val startGameUsecase = StartGameUsecase(gameProvider, gameSaver)
 
-        val game = getGame(gameId, 8)
+        val game = getGame(gameId, userId, 8)
         `when`(gameProvider.findById(gameId)).thenReturn(game)
-        `when`(gameSaver.save(any())).then { it.arguments.first() }
+        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
 
-        val updatedGame = userCase.execute(gameId)
+        val updatedGame = startGameUsecase.execute(gameId, userId)
 
         assertTrue(updatedGame.players.all { it.teamId != null })
+        assertEquals(Game.GameStatus.STARTED, updatedGame.status)
         assertEquals(4, updatedGame.players.map { it.teamId }.distinct().size)
+        val playersGroupedByTeam = updatedGame.players.groupBy { it.teamId }
+        playersGroupedByTeam.forEach { entry ->
+            val players = entry.value.sortedBy { it.moveOrder }
+            assertTrue(
+                players[0].moveOrder + 4 == players[1].moveOrder,
+                "First and second player in a team don't have a gap of 3 players"
+            )
+        }
     }
 
     @Test
-    fun `WHEN 7 player 3 teams`() {
+    fun execute_7_payers_3_teams() {
         val gameProvider = mock(GameProvider::class.java)
         val gameSaver = mock(GameSaver::class.java)
 
         val gameId = GameId(UUID.randomUUID())
-        val userCase = StartGameUsecase(gameProvider, gameSaver)
+        val userId = UserId(UUID.randomUUID())
+        val startGameUsecase = StartGameUsecase(gameProvider, gameSaver)
 
-        val game = getGame(gameId, 7)
+        val game = getGame(gameId, userId, 7)
         `when`(gameProvider.findById(gameId)).thenReturn(game)
-        `when`(gameSaver.save(any())).then { it.arguments.first() }
+        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
 
-        val updatedGame = userCase.execute(gameId)
+        val updatedGame = startGameUsecase.execute(gameId, userId)
 
         assertTrue(updatedGame.players.all { it.teamId != null })
-        //one team has 3 players
+        assertEquals(Game.GameStatus.STARTED, updatedGame.status)
         assertEquals(3, updatedGame.players.groupBy { it.teamId }.entries.map { it.value.size }.max())
         assertEquals(3, updatedGame.players.map { it.teamId }.distinct().size)
+
+        val playersGroupedByTeam = updatedGame.players.groupBy { it.teamId }
+        playersGroupedByTeam.forEach { entry ->
+            val players = entry.value.sortedBy { it.moveOrder }
+            assertTrue(
+                players[0].moveOrder + 3 == players[1].moveOrder,
+                "First and second player in a team don't have a gap of 3 players"
+            )
+
+            if (entry.value.size == 3) {
+                assertTrue(
+                    players[0].moveOrder + 3 == players[2].moveOrder,
+                    "First and third player in a team don't have a gap of 3 players"
+                )
+            }
+        }
     }
 
-    private fun getGame(gameId: GameId, playersNum: Int): Game {
+    @Test
+    fun execute_6_payers_3_teams() {
+        val gameProvider = mock(GameProvider::class.java)
+        val gameSaver = mock(GameSaver::class.java)
+
+        val userId = UserId(UUID.randomUUID())
+        val gameId = GameId(UUID.randomUUID())
+        val startGameUsecase = StartGameUsecase(gameProvider, gameSaver)
+
+        val game = getGame(gameId, userId, 6)
+        `when`(gameProvider.findById(gameId)).thenReturn(game)
+        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
+
+        val updatedGame = startGameUsecase.execute(gameId, userId)
+
+        assertTrue(updatedGame.players.all { it.teamId != null })
+        assertEquals(Game.GameStatus.STARTED, updatedGame.status)
+        assertEquals(2, updatedGame.players.groupBy { it.teamId }.entries.map { it.value.size }.max())
+        assertEquals(3, updatedGame.players.map { it.teamId }.distinct().size)
+
+        val playersGroupedByTeam = updatedGame.players.groupBy { it.teamId }
+        playersGroupedByTeam.forEach { entry ->
+            val players = entry.value.sortedBy { it.moveOrder }
+            assertTrue(
+                players[0].moveOrder + 3 == players[1].moveOrder,
+                "First and second player in a team don't have a gap of 3 players"
+            )
+        }
+    }
+
+    private fun getGame(gameId: GameId, creatorId: UserId, playersNum: Int): Game {
         return Game(
             id = gameId,
             code = "test",
-            creatorId = UserId(UUID.randomUUID()),
+            creatorId = creatorId,
             config = mock(GameConfig::class.java),
             players = createPlayers(playersNum, gameId),
             words = mutableListOf()
@@ -74,6 +132,4 @@ internal class StartGameUsecaseTest {
             )
         }.toMutableList()
     }
-
-
 }

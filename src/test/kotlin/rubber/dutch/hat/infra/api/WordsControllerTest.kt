@@ -2,9 +2,6 @@ package rubber.dutch.hat.infra.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.ResultActionsDsl
-import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.AddWordsRequestPayload
 import rubber.dutch.hat.domain.model.UserId
@@ -66,14 +63,6 @@ class WordsControllerTest : BaseApplicationTest() {
 
     val errorResponse: ErrorResponse = objectMapper.readValue(mockResponse.contentAsString)
     assert(errorResponse.code == ErrorCode.WORDS_LIMIT_EXCEEDED)
-  }
-
-  private fun callAddWords(userId: UserId, payload: AddWordsRequestPayload): ResultActionsDsl {
-    return mockMvc.post("/api/v1/words") {
-      header(USER_ID_HEADER, userId.userId)
-      content = objectMapper.writeValueAsString(payload)
-      contentType = MediaType.APPLICATION_JSON
-    }
   }
 
 }
