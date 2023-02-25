@@ -7,7 +7,7 @@ data class PlayerDto(
         val userId: UserId,
         val status: PlayerStatus,
         var moveOrder: Int,
-        var teamId: Long?,
+        var teamId: Int?,
         val role: PlayerRole
 )
 

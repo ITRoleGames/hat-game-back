@@ -93,11 +93,11 @@ class GameController(
     }
 
     @Operation(
-        summary = "Жеребьевка, создание комманд",
+        summary = "Старт игры",
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Команды созданы"
+                description = "Игра начата"
             ),
             ApiResponse(
                 responseCode = "422",
@@ -106,10 +106,10 @@ class GameController(
             )]
     )
     @PostMapping("/games/{gameId}/startGame")
-    fun createTeams(
+    fun startGame(
         @PathVariable gameId: GameId,
         @RequestHeader("user-id") currentUserId: UserId
     ): GameResponse {
-        return startGameUsecase.execute(gameId)
+        return startGameUsecase.execute(gameId,currentUserId)
     }
 }

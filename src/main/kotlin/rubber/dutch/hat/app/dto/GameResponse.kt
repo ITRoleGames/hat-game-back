@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema
 import rubber.dutch.hat.domain.model.*
 
 data class GameResponse(
-        @field:Schema(description = "id игры")
+        @field:Schema(description = "Id игры")
         val id: GameId,
 
-        @field:Schema(description = "код игры")
+        @field:Schema(description = "Код игры")
         val code: String,
+
+        @field:Schema(description = "Создатель игры")
+        val creatorId: String,
 
         @field:Schema(description = "Количество слов на участника игры")
         val wordsPerPlayer: Int,
@@ -19,37 +22,22 @@ data class GameResponse(
         @field:Schema(description = "Игроки")
         val players: List<PlayerDto>,
 
-        @field:Schema(description = "Идентификатов следующего игрока")
-        val nextPlayerId: Long,
+        @field:Schema(description = "Количество слов")
+        val wordsCount: Int,
 
-        @field:Schema(description = "Команды")
-        val teams: List<TeamDto>,
-
-        @field:Schema(description = "Слова")
-        val words: List<WordDto>
+        @field:Schema(description = "Статус игры")
+        val status: Game.GameStatus
 )
 
 fun Game.toGameResponse(): GameResponse {
     return GameResponse(
         id = id,
         code = code,
+        creatorId = creatorId.toString(),
         wordsPerPlayer = config.wordsPerPlayer,
         moveTime = config.moveTime,
         players = players.map(Player::toDto),
-        nextPlayerId = nextPlayerId ?: -1,
-        teams = makeTeams(players),
-        words = words.map(WordInGame::toDto)
+        wordsCount = words.size,
+        status = status
     )
-}
-
-fun makeTeams(player: MutableList<Player>): List<TeamDto> {
-    return player.map{
-        val currentTeamId = it.teamId
-        TeamDto(id = it.teamId,
-            teamNumber = it.teamId,
-            userIds = player
-                .filter{ it.teamId == currentTeamId }
-                .map{ it.userId }
-        )
-    }
 }
