@@ -24,19 +24,19 @@ class StartGameUsecase(
         if (game.status != Game.GameStatus.NEW) throw GameStatusException()
         if (game.creatorId != currentUserId) throw OperationNotPermittedException()
 
-        var teamId = 0
         val oddPlayerList: List<Player>
         var lastPlayer: Player? = null
 
-        if (game.players.size % TEAM_SIZE == 0) {
+        if (game.players.size % DEFAULT_TEAM_SIZE == 0) {
             oddPlayerList = game.players
         } else {
             oddPlayerList = game.players.take(game.players.size - 1)
             lastPlayer = game.players.last()
         }
 
+        var teamId = 0
         var moveOrder = 0
-        oddPlayerList.shuffled().chunked(2).forEach {
+        oddPlayerList.shuffled().chunked(DEFAULT_TEAM_SIZE).forEach {
             it[0].teamId = teamId
             it[0].moveOrder = moveOrder
             it[1].teamId = teamId
@@ -56,6 +56,6 @@ class StartGameUsecase(
     }
 
     companion object {
-        private const val TEAM_SIZE = 2
+        private const val DEFAULT_TEAM_SIZE = 2
     }
 }
