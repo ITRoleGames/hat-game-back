@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "3.0.1-SNAPSHOT"
+	id("org.springframework.boot") version "3.0.2"
 	id("io.spring.dependency-management") version "1.1.0"
 	kotlin("plugin.jpa") version "1.7.21"
 	kotlin("plugin.allopen") version "1.7.21"
@@ -41,6 +41,7 @@ dependencies {
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 	testImplementation("org.testcontainers:junit-jupiter:1.17.6")
 	testImplementation("org.testcontainers:postgresql:1.17.6")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
 }
 
