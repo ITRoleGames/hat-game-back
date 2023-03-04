@@ -3,7 +3,7 @@ package rubber.dutch.hat.infra.amqp
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import rubber.dutch.hat.domain.model.event.GameUpdatedEvent
+import rubber.dutch.hat.game.api.GameUpdatedEvent
 import rubber.dutch.hat.infra.amqp.AmqpConfig.Companion.GAME_EVENT_QUEUE_NAME
 
 @Component

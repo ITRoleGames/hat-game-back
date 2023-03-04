@@ -11,7 +11,7 @@ import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.AddWordsRequestPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
-import rubber.dutch.hat.domain.model.event.GameEventType
+import rubber.dutch.hat.game.api.GameEventType
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.UUID.randomUUID

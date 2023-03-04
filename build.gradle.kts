@@ -22,9 +22,17 @@ repositories {
 	mavenCentral()
 	maven { url = uri("https://repo.spring.io/milestone") }
 	maven { url = uri("https://repo.spring.io/snapshot") }
+	maven {
+		url = uri("https://maven.pkg.github.com/itrolegames/hat-game-event-api")
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("username")
+			password = project.findProperty("gpr.key") as String? ?: System.getenv("password")
+		}
+	}
 }
 
 dependencies {
+	implementation("rubber.dutch.hat:hat-game-event-api:0.0.1")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
