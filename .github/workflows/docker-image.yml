@@ -2,7 +2,8 @@ name: Create Image and Deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - 'feature/HAT-67'
 
 env:
   REGISTRY: ghcr.io
@@ -39,6 +40,9 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        env:
+          gpr_user: ${{ github.actor }}
+          gpr_key: ${{ secrets.GITHUB_TOKEN }}
     - name: Webhook
       uses: distributhor/workflow-webhook@v2
       env:

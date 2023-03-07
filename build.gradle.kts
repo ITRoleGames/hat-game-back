@@ -25,8 +25,8 @@ repositories {
 	maven {
 		url = uri("https://maven.pkg.github.com/itrolegames/hat-game-event-api")
 		credentials {
-			username = project.findProperty("gpr.user") as String? ?: System.getenv("username")
-			password = project.findProperty("gpr.key") as String? ?: System.getenv("password")
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("gpr_user")
+			password = project.findProperty("gpr.key") as String? ?: System.getenv("gpr_key")
 		}
 	}
 }
