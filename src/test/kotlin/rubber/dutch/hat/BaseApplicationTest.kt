@@ -47,6 +47,7 @@ class BaseApplicationTest {
             registry.add("spring.datasource.username") { postgreSQLContainer.username }
             registry.add("spring.datasource.password") { postgreSQLContainer.password }
             registry.add("spring.datasource.driverClassName") { "org.testcontainers.jdbc.ContainerDatabaseDriver" }
+            registry.add("application.version") { "1.0.0" }
         }
     }
 
