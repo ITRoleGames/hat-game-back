@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'feature/HAT-67'
+      - 'feature/HAT-67-test'
 
 env:
   REGISTRY: ghcr.io
