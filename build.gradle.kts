@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-println("GPR_USER=" + System.getenv("GPR_USER"))
-println("GPR_KEY=" + System.getenv("GPR_KEY"))
+System.getenv().forEach { (k, v) -> println("$k=$v") }
 
 plugins {
   id("org.springframework.boot") version "3.0.1-SNAPSHOT"
