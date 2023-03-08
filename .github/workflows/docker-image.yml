@@ -40,9 +40,6 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        build-args: |
-          GPR_USER=${{ github.actor }}
-          GPR_KEY=${{ secrets.GITHUB_TOKEN }}
     - name: Webhook
       uses: distributhor/workflow-webhook@v2
       env:
