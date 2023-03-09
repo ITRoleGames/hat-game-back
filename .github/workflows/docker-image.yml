@@ -42,7 +42,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           GPR_USER=${{ github.actor }}
-          GPR_KEY=${{ secrets.PACKAGE_ACCESS_TOKEN }}
+          GPR_KEY=${{ secrets.PACKAGE_TOKEN }}
     - name: Webhook
       uses: distributhor/workflow-webhook@v2
       env:
