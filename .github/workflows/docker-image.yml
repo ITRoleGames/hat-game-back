@@ -2,8 +2,7 @@ name: Create Image and Deploy
 
 on:
   push:
-    branches:
-      - 'feature/HAT-67'
+    branches: [ "master" ]
 
 env:
   REGISTRY: ghcr.io
