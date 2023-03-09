@@ -33,7 +33,7 @@ fun Game.toGameResponse(): GameResponse {
     return GameResponse(
         id = id,
         code = code,
-        creatorId = creatorId.toString(),
+        creatorId = creatorId.userId.toString(),
         wordsPerPlayer = config.wordsPerPlayer,
         moveTime = config.moveTime,
         players = players.map(Player::toDto),
