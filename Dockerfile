@@ -7,7 +7,7 @@ ENV GPR_USER ${GPR_USER}
 ENV GPR_KEY ${GPR_KEY}
 
 COPY gradle gradle
-COPY build.gradle.kts settings.gradle.kts gradlew gradle.properties* ./
+COPY build.gradle.kts settings.gradle.kts gradlew ./
 COPY src src
 
 RUN apk update && apk add dos2unix
