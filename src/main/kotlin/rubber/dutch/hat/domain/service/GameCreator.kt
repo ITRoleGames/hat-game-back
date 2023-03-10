@@ -11,20 +11,24 @@ import java.util.*
 @Component
 class GameCreator(private val gameRepository: GameRepository) {
 
-  fun createGame(creatorId: UserId, config: GameConfig): Game {
-    val game = Game(
-      id = GameId(UUID.randomUUID()),
-      code = generateCode(),
-      creatorId = creatorId,
-      config = config,
-    ).also {
-      it.addPlayer(creatorId)
+    fun createGame(creatorId: UserId, config: GameConfig): Game {
+        val game = Game(
+            id = GameId(UUID.randomUUID()),
+            code = generateCode(),
+            creatorId = creatorId,
+            config = config,
+        ).also {
+            it.addPlayer(creatorId)
+        }
+        return gameRepository.save(game)
     }
-    return gameRepository.save(game)
-  }
 
-  private fun generateCode(): String {
-    return UUID.randomUUID().toString().replace("-", "")
-  }
-
+    private fun generateCode(): String {
+        return ('a'..'z').map { it }.shuffled().subList(0, 3)
+            .plus(
+                (0..9).map { it.digitToChar() }.shuffled().subList(0, 2)
+            )
+            .shuffled()
+            .joinToString("")
+    }
 }

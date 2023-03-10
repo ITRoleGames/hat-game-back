@@ -17,12 +17,14 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Testcontainers
+import rubber.dutch.hat.app.dto.AddWordsRequestPayload
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
 import rubber.dutch.hat.app.dto.GameResponse
 import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.amqp.TestGameEventListener
+import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -60,6 +62,7 @@ class BaseApplicationTest {
             registry.add("spring.rabbitmq.username") { rabbitMQContainer.adminUsername }
             registry.add("spring.rabbitmq.password") { rabbitMQContainer.adminPassword }
             registry.add("spring.rabbitmq.vhost") { "/" }
+            registry.add("application.version") { "1.0.0" }
         }
     }
 
@@ -102,7 +105,21 @@ class BaseApplicationTest {
 
     protected fun callGetGame(gameId: GameId, userId: UserId): ResultActionsDsl {
         return mockMvc.get("/api/v1/games/${gameId.gameId}") {
-            header("user-id", userId.userId)
+            header(USER_ID_HEADER, userId.userId)
+        }
+    }
+    protected fun callAddWords(userId: UserId, payload: AddWordsRequestPayload): ResultActionsDsl {
+        return mockMvc.post("/api/v1/words") {
+            header(USER_ID_HEADER, userId.userId)
+            content = objectMapper.writeValueAsString(payload)
+            contentType = MediaType.APPLICATION_JSON
+        }
+    }
+
+    protected fun callStartGame(gameId: GameId, userId: UserId): ResultActionsDsl {
+        return mockMvc.post("/api/v1/games/${gameId.gameId}/startGame") {
+            header(USER_ID_HEADER, userId.userId)
+            contentType = MediaType.APPLICATION_JSON
         }
     }
 }

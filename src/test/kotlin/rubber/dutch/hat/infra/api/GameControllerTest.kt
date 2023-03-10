@@ -3,12 +3,12 @@ package rubber.dutch.hat.infra.api
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import rubber.dutch.hat.BaseApplicationTest
-import rubber.dutch.hat.app.dto.CreateGameRequestPayload
-import rubber.dutch.hat.app.dto.GameResponse
-import rubber.dutch.hat.app.dto.JoinGameRequestPayload
+import rubber.dutch.hat.app.dto.*
+import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.MAX_PLAYERS_COUNT
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.game.api.GameEventType
@@ -113,4 +113,34 @@ class GameControllerTest : BaseApplicationTest() {
         val errorResponse: ErrorResponse = objectMapper.readValue(joinGameMockResponse.contentAsString)
         assertEquals(ErrorCode.PLAYERS_LIMIT_EXCEEDED, errorResponse.code)
     }
+
+    @Test
+    fun `WHEN start game THAN success`() {
+        val userId = UserId(randomUUID())
+        val secondUserId = UserId(randomUUID())
+        val thirdUserId = UserId(randomUUID())
+        val forthUserId = UserId(randomUUID())
+        val gameDto = createGame(userId)
+        callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = secondUserId))
+        callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = thirdUserId))
+        callJoinGame(JoinGameRequestPayload(code = gameDto.code, userId = forthUserId))
+        val addWordsPayload = AddWordsRequestPayload(gameDto.id, words = listOf("test"))
+        callAddWords(userId, addWordsPayload)
+        callAddWords(secondUserId, addWordsPayload)
+        callAddWords(thirdUserId, addWordsPayload)
+        callAddWords(forthUserId, addWordsPayload)
+
+        callStartGame(gameDto.id, userId)
+            .andExpect {
+                status { isOk() }
+                jsonPath("id") { value(gameDto.id.gameId.toString()) }
+                jsonPath("code") { value(gameDto.code) }
+                jsonPath("wordsPerPlayer") { value(gameDto.wordsPerPlayer) }
+                jsonPath("moveTime") { value(gameDto.moveTime) }
+                jsonPath("players", Matchers.hasSize<PlayerDto>(4))
+                jsonPath("wordsCount") { value(4) }
+                jsonPath("status") { value(Game.GameStatus.STARTED.toString()) }
+            }
+    }
+
 }

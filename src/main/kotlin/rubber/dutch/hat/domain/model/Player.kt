@@ -24,7 +24,7 @@ class Player(
   var moveOrder: Int = 0,
 
   @Column(name = "team_id")
-  var teamId: String? = null,
+  var teamId: Int = 0,
 
   @Column(name = "role", nullable = false)
   val role: PlayerRole,

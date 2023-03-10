@@ -4,9 +4,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.awaitility.Awaitility
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.ResultActionsDsl
-import org.springframework.test.web.servlet.post
 import rubber.dutch.hat.BaseApplicationTest
 import rubber.dutch.hat.app.dto.AddWordsRequestPayload
 import rubber.dutch.hat.domain.model.GameId

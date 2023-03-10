@@ -9,35 +9,33 @@ import rubber.dutch.hat.app.AddWordsUsecase
 import rubber.dutch.hat.app.dto.AddWordsRequestPayload
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
-import java.util.*
-
-const val USER_ID_HEADER = "user-id"
+import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 
 @RestController
 @RequestMapping("/api/v1")
 class WordController(
-  private val addWordsUsecase: AddWordsUsecase
+    private val addWordsUsecase: AddWordsUsecase
 ) {
 
-  @Operation(
-    summary = "Добавить слова в шапку",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Слова добавлены"
-      ),
-      ApiResponse(
-        responseCode = "422",
-        description = "Бизнес-ошибка",
-        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-      )]
-  )
-  @PostMapping("/words")
-  fun addWords(
-    @RequestHeader(USER_ID_HEADER) userId: UserId,
-    @RequestBody payload: AddWordsRequestPayload
-  ) {
-    addWordsUsecase.execute(userId, payload)
-  }
+    @Operation(
+        summary = "Добавить слова в шапку",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Слова добавлены"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
+    )
+    @PostMapping("/words")
+    fun addWords(
+        @RequestHeader(USER_ID_HEADER) userId: UserId,
+        @RequestBody payload: AddWordsRequestPayload
+    ) {
+        addWordsUsecase.execute(userId, payload)
+    }
 
 }

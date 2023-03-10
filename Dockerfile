@@ -9,6 +9,7 @@ ENV GPR_KEY ${GPR_KEY}
 COPY gradle gradle
 COPY build.gradle.kts settings.gradle.kts gradlew ./
 COPY src src
+COPY .git/ ./.git/
 
 RUN apk update && apk add dos2unix
 RUN dos2unix gradlew
