@@ -1,6 +1,8 @@
 package rubber.dutch.hat.infra.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.awaitility.Awaitility.await
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -9,14 +11,16 @@ import rubber.dutch.hat.app.dto.*
 import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.MAX_PLAYERS_COUNT
 import rubber.dutch.hat.domain.model.UserId
+import rubber.dutch.hat.game.api.GameEventType
 import rubber.dutch.hat.infra.api.dto.ErrorCode
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import java.util.UUID.randomUUID
+import java.util.concurrent.TimeUnit
 
 class GameControllerTest : BaseApplicationTest() {
 
     @Test
-    fun `get game success`() {
+    fun `WHEN get game THAN success`() {
         val userId = UserId(randomUUID())
 
         val mockResponse = callCreateGame(CreateGameRequestPayload(userId, 10, 30))
@@ -64,6 +68,20 @@ class GameControllerTest : BaseApplicationTest() {
     }
 
     @Test
+    fun `WHEN join game THAN GameEvent sent`() {
+        val userId = UserId(randomUUID())
+        val gameDto = createGame(userId)
+
+        joinGame(JoinGameRequestPayload(code = gameDto.code, userId = userId))
+
+        await().atMost(10, TimeUnit.SECONDS).until { gameEventListener.getEvents().size > 0 }
+        assertEquals(1, gameEventListener.getEvents().size)
+
+        assertEquals(GameEventType.GAME_UPDATED, gameEventListener.getEvents()[0].type)
+        assertEquals(gameDto.id.gameId, gameEventListener.getEvents()[0].gameId)
+    }
+
+    @Test
     fun `WHEN join to unknown game THEN error`() {
         val mockResponse = callJoinGame(JoinGameRequestPayload("unknown_game_code", UserId(randomUUID())))
             .andExpect {
@@ -71,7 +89,7 @@ class GameControllerTest : BaseApplicationTest() {
             }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(mockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.GAME_NOT_FOUND)
+        assertEquals(ErrorCode.GAME_NOT_FOUND, errorResponse.code)
     }
 
     @Test
@@ -93,7 +111,7 @@ class GameControllerTest : BaseApplicationTest() {
                 }.andReturn().response
 
         val errorResponse: ErrorResponse = objectMapper.readValue(joinGameMockResponse.contentAsString)
-        assert(errorResponse.code == ErrorCode.PLAYERS_LIMIT_EXCEEDED)
+        assertEquals(ErrorCode.PLAYERS_LIMIT_EXCEEDED, errorResponse.code)
     }
 
     @Test

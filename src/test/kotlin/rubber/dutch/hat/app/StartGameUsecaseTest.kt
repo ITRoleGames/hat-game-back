@@ -3,9 +3,11 @@ package rubber.dutch.hat.app
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import rubber.dutch.hat.domain.model.*
 import rubber.dutch.hat.domain.service.GameProvider
 import rubber.dutch.hat.domain.service.GameSaver
@@ -24,8 +26,8 @@ internal class StartGameUsecaseTest {
         val startGameUsecase = StartGameUsecase(gameProvider, gameSaver)
 
         val game = getGame(gameId, userId, 8)
-        `when`(gameProvider.findById(gameId)).thenReturn(game)
-        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
+        whenever(gameProvider.findById(gameId)).thenReturn(game)
+        whenever(gameSaver.saveAndNotify(any(), matcherUserIdClass(userId))).then { it.arguments.first() }
 
         val updatedGame = startGameUsecase.execute(gameId, userId)
 
@@ -53,7 +55,7 @@ internal class StartGameUsecaseTest {
 
         val game = getGame(gameId, userId, 7)
         `when`(gameProvider.findById(gameId)).thenReturn(game)
-        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
+        `when`(gameSaver.saveAndNotify(any(), matcherUserIdClass(userId))).then { it.arguments.first() }
 
         val updatedGame = startGameUsecase.execute(gameId, userId)
 
@@ -90,7 +92,7 @@ internal class StartGameUsecaseTest {
 
         val game = getGame(gameId, userId, 6)
         `when`(gameProvider.findById(gameId)).thenReturn(game)
-        `when`(gameSaver.saveAndNotify(any())).then { it.arguments.first() }
+        `when`(gameSaver.saveAndNotify(any(), matcherUserIdClass(userId))).then { it.arguments.first() }
 
         val updatedGame = startGameUsecase.execute(gameId, userId)
 
@@ -131,5 +133,14 @@ internal class StartGameUsecaseTest {
                 words = mutableListOf()
             )
         }.toMutableList()
+    }
+
+    private fun matcherUserIdClass(userId: UserId): UserId {
+        // see https://github.com/mockito/mockito-kotlin/issues/309
+        return Mockito.argThat { arg: Any ->
+            if (arg is UUID) {
+                arg == userId.userId
+            } else arg == userId
+        } as UserId? ?: userId
     }
 }

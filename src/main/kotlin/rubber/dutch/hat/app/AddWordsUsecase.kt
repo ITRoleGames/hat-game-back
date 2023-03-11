@@ -16,6 +16,6 @@ class AddWordsUsecase(
     fun execute(creatorId: UserId, payload: AddWordsRequestPayload) {
         val game = gameProvider.findById(payload.gameId) ?: throw GameNotFoundException()
         game.addWordsToPlayer(creatorId, payload.words)
-        gameSaver.saveAndNotify(game)
+        gameSaver.saveAndNotify(game, creatorId)
     }
 }
