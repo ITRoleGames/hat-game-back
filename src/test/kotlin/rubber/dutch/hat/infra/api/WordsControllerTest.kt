@@ -82,12 +82,4 @@ class WordsControllerTest : BaseApplicationTest() {
             generateSequence { randomUUID().toString() }.take(wordsCount).toList()
         )
     }
-
-    private fun callAddWords(userId: UserId, payload: AddWordsRequestPayload): ResultActionsDsl {
-        return mockMvc.post("/api/v1/words") {
-            header(USER_ID_HEADER, userId.userId)
-            content = objectMapper.writeValueAsString(payload)
-            contentType = MediaType.APPLICATION_JSON
-        }
-    }
 }

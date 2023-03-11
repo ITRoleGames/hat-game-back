@@ -52,7 +52,7 @@ class StartGameUsecase(
         }
 
         game.status = Game.GameStatus.STARTED
-        return gameSaver.saveAndNotify(game).toGameResponse()
+        return gameSaver.saveAndNotify(game, currentUserId).toGameResponse()
     }
 
     companion object {
