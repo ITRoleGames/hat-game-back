@@ -2,7 +2,6 @@ package rubber.dutch.hat.domain.model
 
 import jakarta.persistence.*
 import java.time.Instant
-import java.util.*
 
 @Entity
 @Table(name = "round")
@@ -26,9 +25,13 @@ class Round(
     @Column(name = "start_time", nullable = false)
     val startTime: Instant = Instant.now(),
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     var status: RoundStatus = RoundStatus.STARTED
-)
+) {
+    fun getLastExplanation(): Explanation {
+        return explanation.maxByOrNull { it.startTime } ?: throw RuntimeException()
+    }
+}
 
 enum class RoundStatus {
     STARTED,

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.AddRoundUsecase
-import rubber.dutch.hat.app.dto.RoundResponseDto
+import rubber.dutch.hat.app.dto.RoundDto
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
@@ -28,9 +28,11 @@ class RoundController(private val addRoundUsecase: AddRoundUsecase) {
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )]
     )
-    @PostMapping("/game/{gameId}/start_round")
-    fun startRound(@PathVariable gameId: GameId,
-                   @RequestHeader("user-id") userId: UserId): RoundResponseDto {
+    @PostMapping("/games/{gameId}/rounds")
+    fun startRound(
+        @PathVariable gameId: GameId,
+        @RequestHeader("user-id") userId: UserId
+    ): RoundDto {
         return addRoundUsecase.execute(gameId, userId)
     }
 }

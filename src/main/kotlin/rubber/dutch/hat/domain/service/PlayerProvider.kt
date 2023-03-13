@@ -8,7 +8,7 @@ import rubber.dutch.hat.domain.port.PlayerRepository
 @Component
 class PlayerProvider(private val playerRepository: PlayerRepository) {
 
-    fun finByUserId(userId: UserId): Player? {
+    fun findByUserId(userId: UserId): Player? {
         return playerRepository.findByUserId(userId)
     }
 }

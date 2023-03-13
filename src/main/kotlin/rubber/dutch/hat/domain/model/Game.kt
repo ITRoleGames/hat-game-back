@@ -7,8 +7,6 @@ import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
 import rubber.dutch.hat.domain.exception.RoundStatusException
 import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.exception.WordsLimitExceededException
-import java.time.Instant
-import kotlin.math.round
 
 @Entity
 @Table(name = "game")
@@ -88,15 +86,31 @@ class Game(
       return players.any { it.userId == userId }
   }
 
-  fun addNewRound(playerId: PlayerInternalId, gameId: GameId) {
+  fun addNewRound(playerId: PlayerInternalId, gameId: GameId) : Round {
       if (rounds.any { it.status == RoundStatus.STARTED }) {
           throw RoundStatusException()
       }
-      rounds.add(Round(
+
+      val round = Round(
           id = RoundId(),
           explainerId = playerId,
           gameId = gameId
-      ))
+      )
+      rounds.add(round)
+      return round
+    }
+
+    fun addNewExplanation(roundId: RoundId) {
+        val word = words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
+        val exp = Explanation(
+            id = ExplanationId(),
+            roundId = roundId,
+            wordInGameId = word
+        )
+
+        val round = rounds.filter { it.id == roundId }.random()
+//            todo: сделать нормально вытаскиевание элемента
+        round.explanation.add(exp)
     }
 
   fun getLastRound(): Round? {

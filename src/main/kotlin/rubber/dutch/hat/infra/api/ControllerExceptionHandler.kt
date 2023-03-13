@@ -39,4 +39,11 @@ class ControllerExceptionHandler {
     fun handleRoundStatusException(ex: RoundStatusException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_ROUND_STATUS))
     }
+
+    @ExceptionHandler(PlayerNotFoundException::class)
+    fun handlePlayerNotFoundException(ex: PlayerNotFoundException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.PLAYER_NOT_FOUND))
+    }
+
+
 }
