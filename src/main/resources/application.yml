@@ -1,6 +1,7 @@
 server:
   port: 9000
-
+application:
+  version: ${version}
 spring:
   application:
     name: game-service
@@ -8,9 +9,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
   datasource:
-    url: jdbc:postgresql://${APP_HOST:localhost}:${DB_PORT:5402}/hat_game
-    username: ${DB_USER:hat_game}
-    password: ${DB_PASSWORD:test1234}
+    url: jdbc:postgresql://\${APP_HOST:localhost}:\${DB_PORT:5402}/hat_game
+    username: \${DB_USER:hat_game}
+    password: \${DB_PASSWORD:test1234}
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: game
+  rabbitmq:
+    host: \${APP_HOST:localhost}
+    port: \${RABBIT_PORT:5672}
+    username: \${RABBIT_USER:guest}
+    password: \${RABBIT_PASSWORD:guest}

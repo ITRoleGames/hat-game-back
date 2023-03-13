@@ -25,16 +25,17 @@ class Game(
   @Column(name = "config")
   val config: GameConfig,
 
-  @Column(name = "status")
-  var status: GameStatus,
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    val players: MutableList<Player> = mutableListOf(),
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @JoinColumn(name = "game_id")
-  val players: MutableList<Player> = mutableListOf(),
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    val words: MutableList<WordInGame> = mutableListOf(),
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @JoinColumn(name = "game_id")
-  val words: MutableList<WordInGame> = mutableListOf(),
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
+    var status: GameStatus = GameStatus.NEW,
 
   @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
   @JoinColumn(name = "game_id")

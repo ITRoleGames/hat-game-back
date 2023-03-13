@@ -1,6 +1,3 @@
-# hat-game-back
+[![codecov](https://codecov.io/gh/ITRoleGames/hat-game-back/branch/master/graph/badge.svg?token=30QPB8Y0T0)](https://codecov.io/gh/ITRoleGames/hat-game-back)
 
-
-## Docker
-* Сборка образа: `docker build -t hat-game-service .`
-* Запуск контейнера: `docker run -p 9000:9000 hat-game-service`
+# Hat game service

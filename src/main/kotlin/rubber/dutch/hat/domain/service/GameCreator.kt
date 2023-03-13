@@ -21,7 +21,12 @@ class GameCreator(private val gameRepository: GameRepository) {
     return gameRepository.save(game)
   }
 
-  private fun generateCode(): String {
-    return UUID.randomUUID().toString().replace("-", "")
-  }
+    private fun generateCode(): String {
+        return ('a'..'z').map { it }.shuffled().subList(0, 3)
+            .plus(
+                (0..9).map { it.digitToChar() }.shuffled().subList(0, 2)
+            )
+            .shuffled()
+            .joinToString("")
+    }
 }

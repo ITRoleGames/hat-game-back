@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateGameUsecase
+import rubber.dutch.hat.app.StartGameUsecase
 import rubber.dutch.hat.app.GetGameUsecase
 import rubber.dutch.hat.app.JoinGameUsecase
 import rubber.dutch.hat.app.dto.CreateGameRequestPayload
@@ -69,23 +70,44 @@ class GameController(
     return createGameUsecase.execute(payload)
   }
 
-  @Operation(
-    summary = "Присоединить пользователя к игре",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Пользователь присоединён к игре"
-      ),
-      ApiResponse(
-        responseCode = "422",
-        description = "Бизнес-ошибка",
-        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-      )]
-  )
-  @PostMapping("/game/join")
-  fun joinGame(
-    @RequestBody payload: JoinGameRequestPayload
-  ): GameResponse {
-    return joinGameUsecase.execute(payload)
-  }
+    @Operation(
+        summary = "Присоединить пользователя к игре",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Пользователь присоединён к игре"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
+    )
+    @PostMapping("/game/join")
+    fun joinGame(
+        @RequestBody payload: JoinGameRequestPayload
+    ): GameResponse {
+        return joinGameUsecase.execute(payload)
+    }
+
+    @Operation(
+        summary = "Старт игры",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Игра начата"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
+    )
+    @PostMapping("/games/{gameId}/startGame")
+    fun startGame(
+        @PathVariable gameId: GameId,
+        @RequestHeader("user-id") currentUserId: UserId
+    ): GameResponse {
+        return startGameUsecase.execute(gameId,currentUserId)
+    }
 }

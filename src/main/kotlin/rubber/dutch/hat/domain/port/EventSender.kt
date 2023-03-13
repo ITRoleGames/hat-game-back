@@ -1,6 +1,6 @@
 package rubber.dutch.hat.domain.port
 
-import rubber.dutch.hat.domain.model.event.GameEvent
+import rubber.dutch.hat.game.api.GameEvent
 
 interface EventSender {
 

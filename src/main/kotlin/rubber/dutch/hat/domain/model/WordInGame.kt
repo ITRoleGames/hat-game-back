@@ -30,6 +30,14 @@ class WordInGame(
 
 enum class WordInGameStatus {
   AVAILABLE,
+
+    /**
+     * Слово уже было в игре и было угадано
+     */
   EXPLAINED,
+
+    /**
+     * Слово было в игре и было засвечено, объеснено не по правилам, выбыло из игры
+     */
   FUCKUPED
 }
