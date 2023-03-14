@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import rubber.dutch.hat.domain.model.Round
 import java.util.*
 
-interface JpaRoundRepository : JpaRepository<Round, UUID> {
+interface JpaRoundRepository : JpaRepository<Round, Long> {
     fun save(round: Round): Round
 }

@@ -1,20 +1,19 @@
 package rubber.dutch.hat.app.dto
 
 import rubber.dutch.hat.domain.model.*
-import java.time.Instant
 
 data class RoundDto(
-    val roundId: RoundId,
+    val id: RoundId,
     val explainerId: PlayerInternalId,
-    val explanationId: ExplanationDto
+    val explanation: ExplanationDto
 
 
 )
 
 fun Round.toDto(): RoundDto {
     return RoundDto(
-        roundId = id,
+        id = id,
         explainerId = explainerId,
-        explanationId = getLastExplanation().toDto()
+        explanation = getLastExplanation().toDto()
     )
 }

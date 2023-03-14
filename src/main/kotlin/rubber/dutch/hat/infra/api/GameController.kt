@@ -26,7 +26,8 @@ import java.util.UUID
 class GameController(
         private val getGameUsecase: GetGameUsecase,
         private val createGameUsecase: CreateGameUsecase,
-        private val joinGameUsecase: JoinGameUsecase
+        private val joinGameUsecase: JoinGameUsecase,
+        private val startGameUsecase: StartGameUsecase
 ) {
     @Operation(
             summary = "Получить игру по ID",

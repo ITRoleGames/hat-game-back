@@ -37,9 +37,9 @@ class Game(
     @Column(name = "status")
     var status: GameStatus = GameStatus.NEW,
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-  @JoinColumn(name = "game_id")
-  var rounds: MutableList<Round> = mutableListOf()
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    var rounds: MutableList<Round> = mutableListOf()
 ) {
 
   fun addPlayer(userId: UserId) {
@@ -88,7 +88,7 @@ class Game(
   }
 
   fun addNewRound(playerId: PlayerInternalId, gameId: GameId) : Round {
-      if (rounds.any { it.status == RoundStatus.STARTED }) {
+      if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
           throw RoundStatusException()
       }
 
@@ -101,7 +101,7 @@ class Game(
       return round
     }
 
-    fun addNewExplanation(roundId: RoundId) {
+    fun addNewExplanation(roundId: RoundId) : Explanation {
         val word = words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
         val exp = Explanation(
             id = ExplanationId(),
@@ -109,18 +109,18 @@ class Game(
             wordInGameId = word
         )
 
-        val round = rounds.filter { it.id == roundId }.random()
-//            todo: сделать нормально вытаскиевание элемента
-        round.explanation.add(exp)
+        val round = rounds.filter { it.id == roundId }[0]
+        round.explanations.add(exp)
+        return exp
     }
 
   fun getLastRound(): Round? {
       return rounds.maxByOrNull { it.startTime }
   }
-}
 
-enum class GameStatus {
-    NEW,
-    STARTED,
-    FINISHED
+    enum class GameStatus {
+        NEW,
+        STARTED,
+        FINISHED
+    }
 }

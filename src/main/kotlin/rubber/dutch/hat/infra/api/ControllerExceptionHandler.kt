@@ -45,12 +45,6 @@ class ControllerExceptionHandler {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.PLAYER_NOT_FOUND))
     }
 
-
-    @ExceptionHandler(GameStatusException::class)
-    fun handleWordsLimitExceededException(ex: GameStatusException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_GAME_STATUS))
-    }
-
     @ExceptionHandler(OperationNotPermittedException::class)
     fun handleWordsLimitExceededException(ex: OperationNotPermittedException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.OPERATION_NOT_PERMITTED))

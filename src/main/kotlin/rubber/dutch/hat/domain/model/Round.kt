@@ -19,23 +19,24 @@ class Round(
     val gameId: GameId,
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "explanation_id")
-    var explanation: MutableList<Explanation> = mutableListOf(),
+    @JoinColumn(name = "round_id")
+    var explanations: MutableList<Explanation> = mutableListOf(),
 
     @Column(name = "start_time", nullable = false)
     val startTime: Instant = Instant.now(),
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
     var status: RoundStatus = RoundStatus.STARTED
 ) {
     fun getLastExplanation(): Explanation {
-        return explanation.maxByOrNull { it.startTime } ?: throw RuntimeException()
+        return explanations.maxByOrNull { it.startTime } ?: throw IllegalStateException("Invalid situation")
     }
-}
 
-enum class RoundStatus {
-    STARTED,
-    FINISHED
+    enum class RoundStatus {
+        STARTED,
+        FINISHED
+    }
 }
 
 

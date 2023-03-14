@@ -14,7 +14,7 @@ class GameCreator(private val gameRepository: GameRepository) {
       code = generateCode(),
       creatorId = creatorId,
       config = config,
-      status = GameStatus.NEW
+      status = Game.GameStatus.NEW
     ).also {
       it.addPlayer(creatorId)
     }
