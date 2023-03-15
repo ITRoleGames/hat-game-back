@@ -8,12 +8,12 @@ import rubber.dutch.hat.domain.port.GameRepository
 @Component
 class GameProvider(private val gameRepository: GameRepository) {
 
-  fun findById(id: GameId): Game? {
-    return gameRepository.findById(id.gameId)
-  }
+    fun findById(id: GameId): Game? {
+        return gameRepository.findById(id.gameId)
+    }
 
-  fun findByCode(code: String): Game? {
-    return gameRepository.findByCode(code)
-  }
+    fun findByCode(code: String): Game? {
+        return gameRepository.findByCode(code)
+    }
 
 }

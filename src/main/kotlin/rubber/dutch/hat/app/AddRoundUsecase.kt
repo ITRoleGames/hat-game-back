@@ -10,19 +10,14 @@ import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
-import rubber.dutch.hat.domain.port.EventSender
-import rubber.dutch.hat.domain.service.ExplanationSaver
-import rubber.dutch.hat.domain.service.GameProvider
-import rubber.dutch.hat.domain.service.PlayerProvider
-import rubber.dutch.hat.domain.service.RoundSaver
-import rubber.dutch.hat.game.api.GameUpdatedEvent
+import rubber.dutch.hat.domain.service.*
 
 @Component
 class AddRoundUsecase(
     private val gameProvider: GameProvider,
+    private val gameSaver: GameSaver,
     private val playerProvider: PlayerProvider,
     private val roundSaver: RoundSaver,
-    private val eventSender: EventSender,
     private val explanationSaver: ExplanationSaver
 ) {
     fun execute(gameId: GameId, userId: UserId): RoundDto {
@@ -36,14 +31,13 @@ class AddRoundUsecase(
         }
 
         val player = playerProvider.findByUserId(userId) ?: throw PlayerNotFoundException()
-
         val round = game.addNewRound(player.id, game.id)
         val savedRound = roundSaver.save(round)
+        val explanation = round.addNewExplanation(game.getNewWord())
 
-        val exp = game.addNewExplanation(round.id)
-        explanationSaver.save(exp)
+        explanationSaver.save(explanation)
+        gameSaver.saveAndNotify(game, userId)
 
-        eventSender.send(GameUpdatedEvent(game.id.gameId, game.creatorId.userId))
         return savedRound.toDto()
     }
 }

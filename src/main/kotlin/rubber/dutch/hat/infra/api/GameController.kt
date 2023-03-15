@@ -19,57 +19,59 @@ import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1")
 class GameController(
-        private val getGameUsecase: GetGameUsecase,
-        private val createGameUsecase: CreateGameUsecase,
-        private val joinGameUsecase: JoinGameUsecase,
-        private val startGameUsecase: StartGameUsecase
+    private val getGameUsecase: GetGameUsecase,
+    private val createGameUsecase: CreateGameUsecase,
+    private val joinGameUsecase: JoinGameUsecase,
+    private val startGameUsecase: StartGameUsecase
 ) {
     @Operation(
-            summary = "Получить игру по ID",
-            responses = [
-                ApiResponse(
-                        responseCode = "200",
-                        description = "Найденная игра"
-                ),
-                ApiResponse(
-                        responseCode = "400",
-                        description = "Неверные параметры запроса",
-                        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-                ),
-                ApiResponse(
-                        responseCode = "422",
-                        description = "Бизнес-ошибка",
-                        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-                )]
+        summary = "Получить игру по ID",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Найденная игра"
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Неверные параметры запроса",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
     )
     @GetMapping("/games/{id}")
-    fun getGame(@PathVariable id: UUID, @RequestHeader("user-id") currentUserId: UUID): GameResponse {
+    fun getGame(@PathVariable id: UUID, @RequestHeader(USER_ID_HEADER) currentUserId: UUID): GameResponse {
         return getGameUsecase.execute(GameId(id), UserId(currentUserId))
     }
-  @Operation(
-    summary = "Создать игру",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Игра создана"
-      ),
-      ApiResponse(
-        responseCode = "422",
-        description = "Бизнес-ошибка",
-        content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-      )]
-  )
-  @PostMapping("/games")
-  fun createGame(
-    @RequestBody payload: CreateGameRequestPayload
-  ): GameResponse {
-    return createGameUsecase.execute(payload)
-  }
+
+    @Operation(
+        summary = "Создать игру",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Игра создана"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )]
+    )
+    @PostMapping("/games")
+    fun createGame(
+        @RequestBody payload: CreateGameRequestPayload
+    ): GameResponse {
+        return createGameUsecase.execute(payload)
+    }
 
     @Operation(
         summary = "Присоединить пользователя к игре",
@@ -107,8 +109,8 @@ class GameController(
     @PostMapping("/games/{gameId}/startGame")
     fun startGame(
         @PathVariable gameId: GameId,
-        @RequestHeader("user-id") currentUserId: UserId
+        @RequestHeader(USER_ID_HEADER) currentUserId: UserId
     ): GameResponse {
-        return startGameUsecase.execute(gameId,currentUserId)
+        return startGameUsecase.execute(gameId, currentUserId)
     }
 }

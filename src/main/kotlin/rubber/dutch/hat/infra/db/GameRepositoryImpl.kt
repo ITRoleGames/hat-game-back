@@ -7,19 +7,19 @@ import java.util.*
 
 @Component
 class GameRepositoryImpl(
-  private val jpaGameRepository: JpaGameRepository
+    private val jpaGameRepository: JpaGameRepository
 ) : GameRepository {
 
-  override fun save(game: Game): Game {
-    return jpaGameRepository.save(game)
-  }
+    override fun save(game: Game): Game {
+        return jpaGameRepository.save(game)
+    }
 
-  override fun findById(id: UUID): Game? {
-    return jpaGameRepository.findById(id).orElse(null)
-  }
+    override fun findById(id: UUID): Game? {
+        return jpaGameRepository.findById(id).orElse(null)
+    }
 
-  override fun findByCode(code: String): Game? {
-    return jpaGameRepository.findByCode(code)
-  }
+    override fun findByCode(code: String): Game? {
+        return jpaGameRepository.findByCode(code)
+    }
 
 }

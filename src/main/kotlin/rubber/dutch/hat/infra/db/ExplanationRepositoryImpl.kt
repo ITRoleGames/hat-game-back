@@ -5,7 +5,7 @@ import rubber.dutch.hat.domain.model.Explanation
 import rubber.dutch.hat.domain.port.ExplanationRepository
 
 @Component
-class ExplanationRepositoryImpl (private val explanationRepository: JpaExplanationRepository) : ExplanationRepository {
+class ExplanationRepositoryImpl(private val explanationRepository: JpaExplanationRepository) : ExplanationRepository {
     override fun save(explanation: Explanation): Explanation {
         return explanationRepository.save(explanation)
     }

@@ -6,7 +6,7 @@ import rubber.dutch.hat.domain.port.RoundRepository
 
 @Component
 class RoundSaver(private val roundRepository: RoundRepository) {
-    fun save (round: Round) : Round{
+    fun save(round: Round): Round {
         return roundRepository.save(round)
     }
 }

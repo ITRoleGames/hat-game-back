@@ -9,18 +9,18 @@ import rubber.dutch.hat.domain.service.GameCreator
 
 @Component
 class CreateGameUsecase(
-  private val gameCreator: GameCreator
+    private val gameCreator: GameCreator
 ) {
 
-  fun execute(payload: CreateGameRequestPayload): GameResponse {
-    val game = gameCreator.createGame(
-      payload.creatorId,
-      GameConfig(
-        wordsPerPlayer = payload.wordsPerPlayer,
-        moveTime = payload.moveTime
-      )
-    )
-    return game.toGameResponse()
-  }
+    fun execute(payload: CreateGameRequestPayload): GameResponse {
+        val game = gameCreator.createGame(
+            payload.creatorId,
+            GameConfig(
+                wordsPerPlayer = payload.wordsPerPlayer,
+                moveTime = payload.moveTime
+            )
+        )
+        return game.toGameResponse()
+    }
 
 }

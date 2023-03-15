@@ -5,9 +5,9 @@ import rubber.dutch.hat.domain.model.UserId
 
 data class JoinGameRequestPayload(
 
-  @field:Schema(description = "код игры")
-  val code: String,
+    @field:Schema(description = "код игры")
+    val code: String,
 
-  @field:Schema(description = "id пользователя")
-  val userId: UserId
+    @field:Schema(description = "id пользователя")
+    val userId: UserId
 )

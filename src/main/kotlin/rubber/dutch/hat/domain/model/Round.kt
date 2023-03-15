@@ -33,6 +33,17 @@ class Round(
         return explanations.maxByOrNull { it.startTime } ?: throw IllegalStateException("Invalid situation")
     }
 
+    fun addNewExplanation(word: WordInGame): Explanation {
+        val explanation = Explanation(
+            id = ExplanationId(),
+            roundId = id,
+            wordInGameId = word
+        )
+
+        explanations.add(explanation)
+        return explanation
+    }
+
     enum class RoundStatus {
         STARTED,
         FINISHED

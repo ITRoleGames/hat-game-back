@@ -5,10 +5,10 @@ import java.util.*
 
 interface GameRepository {
 
-    fun findById(id: UUID) : Game?
+    fun findById(id: UUID): Game?
 
-    fun findByCode(code: String) : Game?
+    fun findByCode(code: String): Game?
 
-    fun save(game : Game) : Game
+    fun save(game: Game): Game
 
 }

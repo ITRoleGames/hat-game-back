@@ -11,19 +11,19 @@ import rubber.dutch.hat.domain.exception.WordsLimitExceededException
 @Entity
 @Table(name = "game")
 class Game(
-  @Id
-  @Column(name = "id", nullable = false)
-  val id: GameId,
+    @Id
+    @Column(name = "id", nullable = false)
+    val id: GameId,
 
-  @Column(nullable = false)
-  val code: String,
+    @Column(nullable = false)
+    val code: String,
 
-  @Column(name = "creator_id")
-  val creatorId: UserId,
+    @Column(name = "creator_id")
+    val creatorId: UserId,
 
-  @JdbcTypeCode(SqlTypes.JSON)
-  @Column(name = "config")
-  val config: GameConfig,
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "config")
+    val config: GameConfig,
 
     @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "game_id")
@@ -42,81 +42,72 @@ class Game(
     var rounds: MutableList<Round> = mutableListOf()
 ) {
 
-  fun addPlayer(userId: UserId) {
-      if (isUserInGame(userId)) {
-          return
-      }
-      if (players.size >= MAX_PLAYERS_COUNT) {
-          throw PlayersLimitExceededException()
-      }
-      players.add(
-          Player(
-              id = PlayerInternalId(),
-              userId = userId,
-              gameId = id,
-              status = PlayerStatus.NEW,
-              role = PlayerRole.PLAYER,
-          )
-      )
-  }
-
-  fun addWordsToPlayer(userId: UserId, words: List<String>) {
-    val player = players.find { it.userId == userId }
-      ?: throw UserNotJoinedException()
-
-    if (player.words.size + words.size > config.wordsPerPlayer) {
-      throw WordsLimitExceededException()
-    }
-
-    val wordsInGame = words.map {
-      WordInGame(
-        gameId = id,
-        value = it,
-        authorId = player.id.internalId!!,
-        status = WordInGameStatus.AVAILABLE
-      )
-    }
-    player.words.addAll(wordsInGame)
-
-    if (player.words.size == config.wordsPerPlayer) {
-      player.status = PlayerStatus.READY
-    }
-  }
-
-  fun isUserInGame(userId: UserId): Boolean {
-      return players.any { it.userId == userId }
-  }
-
-  fun addNewRound(playerId: PlayerInternalId, gameId: GameId) : Round {
-      if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
-          throw RoundStatusException()
-      }
-
-      val round = Round(
-          id = RoundId(),
-          explainerId = playerId,
-          gameId = gameId
-      )
-      rounds.add(round)
-      return round
-    }
-
-    fun addNewExplanation(roundId: RoundId) : Explanation {
-        val word = words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
-        val exp = Explanation(
-            id = ExplanationId(),
-            roundId = roundId,
-            wordInGameId = word
+    fun addPlayer(userId: UserId) {
+        if (isUserInGame(userId)) {
+            return
+        }
+        if (players.size >= MAX_PLAYERS_COUNT) {
+            throw PlayersLimitExceededException()
+        }
+        players.add(
+            Player(
+                id = PlayerInternalId(),
+                userId = userId,
+                gameId = id,
+                status = PlayerStatus.NEW,
+                role = PlayerRole.PLAYER,
+            )
         )
-
-        val round = rounds.filter { it.id == roundId }[0]
-        round.explanations.add(exp)
-        return exp
     }
 
-  fun getLastRound(): Round? {
-      return rounds.maxByOrNull { it.startTime }
-  }
+    fun addWordsToPlayer(userId: UserId, words: List<String>) {
+        val player = players.find { it.userId == userId }
+            ?: throw UserNotJoinedException()
+
+        if (player.words.size + words.size > config.wordsPerPlayer) {
+            throw WordsLimitExceededException()
+        }
+
+        val wordsInGame = words.map {
+            WordInGame(
+                gameId = id,
+                value = it,
+                authorId = player.id.internalId!!,
+                status = WordInGameStatus.AVAILABLE
+            )
+        }
+        player.words.addAll(wordsInGame)
+
+        if (player.words.size == config.wordsPerPlayer) {
+            player.status = PlayerStatus.READY
+        }
+    }
+
+    fun isUserInGame(userId: UserId): Boolean {
+        return players.any { it.userId == userId }
+    }
+
+    fun addNewRound(playerId: PlayerInternalId, gameId: GameId): Round {
+        if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
+            throw RoundStatusException()
+        }
+
+        val round = Round(
+            id = RoundId(),
+            explainerId = playerId,
+            gameId = gameId
+        )
+        rounds.add(round)
+        return round
+    }
+
+    fun getNewWord(): WordInGame {
+        return words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
+    }
+
+    fun getLastRound(): Round? {
+        return rounds.maxByOrNull { it.startTime }
+    }
 
     enum class GameStatus {
         NEW,

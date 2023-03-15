@@ -5,12 +5,12 @@ import rubber.dutch.hat.domain.model.UserId
 
 data class CreateGameRequestPayload(
 
-  @field:Schema(description = "id пользователя создающего игру")
-  val creatorId: UserId,
+    @field:Schema(description = "id пользователя создающего игру")
+    val creatorId: UserId,
 
-  @field:Schema(description = "Количество слов на участника игры")
-  val wordsPerPlayer: Int,
+    @field:Schema(description = "Количество слов на участника игры")
+    val wordsPerPlayer: Int,
 
-  @field:Schema(description = "Количество секунд на ход")
-  val moveTime: Int
+    @field:Schema(description = "Количество секунд на ход")
+    val moveTime: Int
 )

@@ -10,6 +10,7 @@ import rubber.dutch.hat.app.dto.RoundDto
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 
 @RestController
 @RequestMapping("/api/v1")
@@ -31,7 +32,7 @@ class RoundController(private val addRoundUsecase: AddRoundUsecase) {
     @PostMapping("/games/{gameId}/rounds")
     fun startRound(
         @PathVariable gameId: GameId,
-        @RequestHeader("user-id") userId: UserId
+        @RequestHeader(USER_ID_HEADER) userId: UserId
     ): RoundDto {
         return addRoundUsecase.execute(gameId, userId)
     }
