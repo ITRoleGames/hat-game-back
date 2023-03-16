@@ -142,5 +142,4 @@ class GameControllerTest : BaseApplicationTest() {
                 jsonPath("status") { value(Game.GameStatus.STARTED.toString()) }
             }
     }
-
 }

@@ -15,5 +15,4 @@ class GameProvider(private val gameRepository: GameRepository) {
     fun findByCode(code: String): Game? {
         return gameRepository.findByCode(code)
     }
-
 }

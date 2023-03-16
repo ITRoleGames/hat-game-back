@@ -6,7 +6,6 @@ import java.time.Instant
 @Entity
 @Table(name = "round")
 class Round(
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -37,8 +36,9 @@ class Round(
         val explanation = Explanation(
             id = ExplanationId(),
             roundId = id,
-            wordInGameId = word
+            word = word
         )
+//        todo: добавить проверки на зевершенный explanation?
 
         explanations.add(explanation)
         return explanation
@@ -49,5 +49,3 @@ class Round(
         FINISHED
     }
 }
-
-

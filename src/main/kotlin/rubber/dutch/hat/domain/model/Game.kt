@@ -87,6 +87,13 @@ class Game(
         return players.any { it.userId == userId }
     }
 
+    fun getPlayerByUserId(userId: UserId): Player {
+        if (!isUserInGame(userId)) {
+            throw UserNotJoinedException()
+        }
+        return players.first { it.userId == userId }
+    }
+
     fun addNewRound(playerId: PlayerInternalId, gameId: GameId): Round {
         if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
             throw RoundStatusException()

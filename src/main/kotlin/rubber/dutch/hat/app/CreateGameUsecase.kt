@@ -22,5 +22,4 @@ class CreateGameUsecase(
         )
         return game.toGameResponse()
     }
-
 }

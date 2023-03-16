@@ -28,7 +28,8 @@ class WordController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/words")
     fun addWords(
@@ -37,5 +38,4 @@ class WordController(
     ) {
         addWordsUsecase.execute(userId, payload)
     }
-
 }

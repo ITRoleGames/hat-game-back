@@ -21,5 +21,4 @@ class GameRepositoryImpl(
     override fun findByCode(code: String): Game? {
         return jpaGameRepository.findByCode(code)
     }
-
 }

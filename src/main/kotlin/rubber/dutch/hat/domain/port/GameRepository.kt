@@ -10,5 +10,4 @@ interface GameRepository {
     fun findByCode(code: String): Game?
 
     fun save(game: Game): Game
-
 }

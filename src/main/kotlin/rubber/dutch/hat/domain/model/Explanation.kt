@@ -2,7 +2,6 @@ package rubber.dutch.hat.domain.model
 
 import jakarta.persistence.*
 import java.time.Instant
-import java.util.*
 
 @Entity
 @Table(name = "explanation")
@@ -17,7 +16,7 @@ class Explanation(
 
     @OneToOne
     @JoinColumn(name = "word_id", nullable = false)
-    val wordInGameId: WordInGame,
+    val word: WordInGame,
 
     @Column(name = "start_time", nullable = false)
     val startTime: Instant = Instant.now(),
@@ -27,6 +26,7 @@ class Explanation(
 
     @Column(name = "result")
     var status: ExplanationResult? = null
+// todo: статус ли это?
 )
 
 enum class ExplanationResult {

@@ -8,10 +8,10 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 @ConfigurationPropertiesScan
 class Application {
 
-	companion object {
-		@JvmStatic
-		fun main(args: Array<String>) {
-			SpringApplication.run(Application::class.java, *args)
-		}
-	}
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            SpringApplication.run(Application::class.java, *args)
+        }
+    }
 }

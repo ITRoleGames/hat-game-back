@@ -20,5 +20,4 @@ class JoinGameUsecase(
         gameSaver.saveAndNotify(game, payload.userId)
         return game.toGameResponse()
     }
-
 }

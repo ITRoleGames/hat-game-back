@@ -5,8 +5,6 @@ import rubber.dutch.hat.app.dto.RoundDto
 import rubber.dutch.hat.app.dto.toDto
 import rubber.dutch.hat.domain.exception.GameNotFoundException
 import rubber.dutch.hat.domain.exception.GameStatusException
-import rubber.dutch.hat.domain.exception.PlayerNotFoundException
-import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
@@ -16,7 +14,6 @@ import rubber.dutch.hat.domain.service.*
 class AddRoundUsecase(
     private val gameProvider: GameProvider,
     private val gameSaver: GameSaver,
-    private val playerProvider: PlayerProvider,
     private val roundSaver: RoundSaver,
     private val explanationSaver: ExplanationSaver
 ) {
@@ -26,11 +23,8 @@ class AddRoundUsecase(
             throw GameStatusException()
         }
 
-        if (!game.isUserInGame(userId)) {
-            throw UserNotJoinedException()
-        }
-
-        val player = playerProvider.findByUserId(userId) ?: throw PlayerNotFoundException()
+        val player = game.getPlayerByUserId(userId)
+//        todo: сделать проверку на очередь игрока
         val round = game.addNewRound(player.id, game.id)
         val savedRound = roundSaver.save(round)
         val explanation = round.addNewExplanation(game.getNewWord())

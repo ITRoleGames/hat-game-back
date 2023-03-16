@@ -27,7 +27,8 @@ class RoundController(private val addRoundUsecase: AddRoundUsecase) {
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/games/{gameId}/rounds")
     fun startRound(

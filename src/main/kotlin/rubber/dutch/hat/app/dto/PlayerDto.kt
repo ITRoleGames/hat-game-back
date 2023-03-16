@@ -11,7 +11,6 @@ data class PlayerDto(
     val role: PlayerRole
 )
 
-
 fun Player.toDto(): PlayerDto {
     return PlayerDto(
         id = id,

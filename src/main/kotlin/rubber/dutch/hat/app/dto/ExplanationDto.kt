@@ -5,16 +5,14 @@ import rubber.dutch.hat.domain.model.ExplanationId
 
 class ExplanationDto(
     val id: ExplanationId,
-    val wordInGameId: Long,
-    val wordInGameValue: String
+    val wordId: Long,
+    val wordValue: String
 )
 
 fun Explanation.toDto(): ExplanationDto {
     return ExplanationDto(
         id = id,
-        wordInGameId = wordInGameId.id!!,
-        wordInGameValue = wordInGameId.value,
+        wordId = word.id!!,
+        wordValue = word.value,
     )
-
 }
-

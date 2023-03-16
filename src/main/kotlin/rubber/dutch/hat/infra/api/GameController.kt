@@ -46,7 +46,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @GetMapping("/games/{id}")
     fun getGame(@PathVariable id: UUID, @RequestHeader(USER_ID_HEADER) currentUserId: UUID): GameResponse {
@@ -64,7 +65,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/games")
     fun createGame(
@@ -84,7 +86,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/game/join")
     fun joinGame(
@@ -104,7 +107,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/games/{gameId}/startGame")
     fun startGame(
