@@ -140,7 +140,9 @@ internal class StartGameUsecaseTest {
         return Mockito.argThat { arg: Any ->
             if (arg is UUID) {
                 arg == userId.userId
-            } else arg == userId
+            } else {
+                arg == userId
+            }
         } as UserId? ?: userId
     }
 }

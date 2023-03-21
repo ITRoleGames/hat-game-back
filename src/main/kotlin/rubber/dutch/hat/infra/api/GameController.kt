@@ -19,6 +19,7 @@ import rubber.dutch.hat.app.dto.JoinGameRequestPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 import java.util.UUID
 
 @RestController
@@ -45,10 +46,11 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @GetMapping("/games/{id}")
-    fun getGame(@PathVariable id: UUID, @RequestHeader("user-id") currentUserId: UUID): GameResponse {
+    fun getGame(@PathVariable id: UUID, @RequestHeader(USER_ID_HEADER) currentUserId: UUID): GameResponse {
         return getGameUsecase.execute(GameId(id), UserId(currentUserId))
     }
 
@@ -63,7 +65,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/games")
     fun createGame(
@@ -83,7 +86,8 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/game/join")
     fun joinGame(
@@ -103,13 +107,14 @@ class GameController(
                 responseCode = "422",
                 description = "Бизнес-ошибка",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )]
+            )
+        ]
     )
     @PostMapping("/games/{gameId}/startGame")
     fun startGame(
         @PathVariable gameId: GameId,
-        @RequestHeader("user-id") currentUserId: UserId
+        @RequestHeader(USER_ID_HEADER) currentUserId: UserId
     ): GameResponse {
-        return startGameUsecase.execute(gameId,currentUserId)
+        return startGameUsecase.execute(gameId, currentUserId)
     }
 }

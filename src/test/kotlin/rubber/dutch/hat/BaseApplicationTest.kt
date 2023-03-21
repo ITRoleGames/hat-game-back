@@ -108,6 +108,7 @@ class BaseApplicationTest {
             header(USER_ID_HEADER, userId.userId)
         }
     }
+
     protected fun callAddWords(userId: UserId, payload: AddWordsRequestPayload): ResultActionsDsl {
         return mockMvc.post("/api/v1/words") {
             header(USER_ID_HEADER, userId.userId)

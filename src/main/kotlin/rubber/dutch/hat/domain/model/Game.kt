@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
+import rubber.dutch.hat.domain.exception.RoundStatusException
 import rubber.dutch.hat.domain.exception.UserNotJoinedException
 import rubber.dutch.hat.domain.exception.WordsLimitExceededException
 
@@ -34,12 +35,15 @@ class Game(
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    var status: GameStatus = GameStatus.NEW
+    var status: GameStatus = GameStatus.NEW,
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "game_id")
+    var rounds: MutableList<Round> = mutableListOf()
 ) {
 
     fun addPlayer(userId: UserId) {
-        val isUserJoined = players.any { it.userId == userId }
-        if (isUserJoined) {
+        if (isUserInGame(userId)) {
             return
         }
         if (players.size >= MAX_PLAYERS_COUNT) {
@@ -77,6 +81,39 @@ class Game(
         if (player.words.size == config.wordsPerPlayer) {
             player.status = PlayerStatus.READY
         }
+    }
+
+    fun isUserInGame(userId: UserId): Boolean {
+        return players.any { it.userId == userId }
+    }
+
+    fun getPlayerByUserId(userId: UserId): Player {
+        if (!isUserInGame(userId)) {
+            throw UserNotJoinedException()
+        }
+        return players.first { it.userId == userId }
+    }
+
+    fun addNewRound(playerId: PlayerInternalId, gameId: GameId): Round {
+        if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
+            throw RoundStatusException()
+        }
+
+        val round = Round(
+            id = RoundId(),
+            explainerId = playerId,
+            gameId = gameId
+        )
+        rounds.add(round)
+        return round
+    }
+
+    fun getNewWord(): WordInGame {
+        return words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
+    }
+
+    fun getLastRound(): Round? {
+        return rounds.maxByOrNull { it.startTime }
     }
 
     enum class GameStatus {

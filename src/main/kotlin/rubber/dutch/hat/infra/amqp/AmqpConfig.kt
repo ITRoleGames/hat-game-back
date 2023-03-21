@@ -6,7 +6,6 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @Configuration
 class AmqpConfig {
 
@@ -20,8 +19,7 @@ class AmqpConfig {
     }
 
     @Bean
-    fun jackson2MessageConverter(objectMapper : ObjectMapper): Jackson2JsonMessageConverter {
+    fun jackson2MessageConverter(objectMapper: ObjectMapper): Jackson2JsonMessageConverter {
         return Jackson2JsonMessageConverter(objectMapper)
     }
 }
-
