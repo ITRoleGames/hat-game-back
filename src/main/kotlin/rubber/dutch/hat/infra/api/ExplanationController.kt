@@ -5,19 +5,23 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.*
-import rubber.dutch.hat.app.CreateRoundUsecase
-import rubber.dutch.hat.app.dto.RoundResponse
+import rubber.dutch.hat.app.FinishCurrentAndStartNewExplanationUsecase
+import rubber.dutch.hat.app.dto.ExplanationResponse
+import rubber.dutch.hat.app.dto.UpdateExplanationRequest
 import rubber.dutch.hat.domain.model.GameId
+import rubber.dutch.hat.domain.model.RoundId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
 import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 
 @RestController
 @RequestMapping("/api/v1")
-class RoundController(private val createRoundUsecase: CreateRoundUsecase) {
+class ExplanationController(
+    private val finishCurrentAndStartNewExplanationUsecase: FinishCurrentAndStartNewExplanationUsecase
+) {
 
     @Operation(
-        summary = "Создать раунд",
+        summary = "Завершить текущее объяснение и начать новое",
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -30,11 +34,13 @@ class RoundController(private val createRoundUsecase: CreateRoundUsecase) {
             )
         ]
     )
-    @PostMapping("/games/{gameId}/rounds")
-    fun createRound(
+    @PostMapping("/games/{gameId}/rounds/{roundId}/finishCurrentAndStartNewExplanation")
+    fun finishCurrentAndStartNewExplanation(
         @PathVariable gameId: GameId,
+        @PathVariable roundId: RoundId,
+        @RequestBody updateExplanationRequest: UpdateExplanationRequest,
         @RequestHeader(USER_ID_HEADER) userId: UserId
-    ): RoundResponse {
-        return createRoundUsecase.execute(gameId, userId)
+    ): ExplanationResponse {
+        return finishCurrentAndStartNewExplanationUsecase.execute(gameId, roundId, updateExplanationRequest, userId)
     }
 }

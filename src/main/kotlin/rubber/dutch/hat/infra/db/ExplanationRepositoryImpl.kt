@@ -9,4 +9,8 @@ class ExplanationRepositoryImpl(private val explanationRepository: JpaExplanatio
     override fun save(explanation: Explanation): Explanation {
         return explanationRepository.save(explanation)
     }
+
+    override fun update(explanation: Explanation): Explanation {
+        return explanationRepository.save(explanation)
+    }
 }

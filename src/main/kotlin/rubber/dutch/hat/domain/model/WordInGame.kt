@@ -21,7 +21,7 @@ class WordInGame(
     val value: String,
 
     @Column(name = "status", nullable = false)
-    val status: WordInGameStatus,
+    var status: WordInGameStatus,
 
     @Column(name = "explainer_id", nullable = true)
     val explainerId: Long? = null,

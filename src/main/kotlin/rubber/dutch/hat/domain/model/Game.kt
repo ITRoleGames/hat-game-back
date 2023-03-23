@@ -3,10 +3,7 @@ package rubber.dutch.hat.domain.model
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
-import rubber.dutch.hat.domain.exception.PlayersLimitExceededException
-import rubber.dutch.hat.domain.exception.RoundStatusException
-import rubber.dutch.hat.domain.exception.UserNotJoinedException
-import rubber.dutch.hat.domain.exception.WordsLimitExceededException
+import rubber.dutch.hat.domain.exception.*
 
 @Entity
 @Table(name = "game")
@@ -88,13 +85,14 @@ class Game(
     }
 
     fun getPlayerByUserId(userId: UserId): Player {
-        if (!isUserInGame(userId)) {
-            throw UserNotJoinedException()
-        }
-        return players.first { it.userId == userId }
+        return players.firstOrNull { it.userId == userId } ?: throw UserNotJoinedException()
     }
 
-    fun addNewRound(playerId: PlayerInternalId, gameId: GameId): Round {
+    fun getPlayerByPlayerId(playerId: PlayerInternalId): Player {
+        return players.firstOrNull { it.id == playerId } ?: throw PlayerNotFoundException()
+    }
+
+    fun createRound(playerId: PlayerInternalId, gameId: GameId): Round {
         if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
             throw RoundStatusException()
         }

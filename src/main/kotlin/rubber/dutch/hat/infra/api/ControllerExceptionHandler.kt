@@ -46,7 +46,27 @@ class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(OperationNotPermittedException::class)
-    fun handleWordsLimitExceededException(ex: OperationNotPermittedException): ResponseEntity<ErrorResponse> {
+    fun handleOperationNotPermittedException(ex: OperationNotPermittedException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.OPERATION_NOT_PERMITTED))
+    }
+
+    @ExceptionHandler(ExplanationNotFoundException::class)
+    fun handleExplanationNotFoundException(ex: ExplanationNotFoundException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.EXPLANATION_NOT_FOUND))
+    }
+
+    @ExceptionHandler(MoveOrderException::class)
+    fun handleMoveOrderException(ex: MoveOrderException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_MOVE_ORDER))
+    }
+
+    @ExceptionHandler(RoundNotFoundException::class)
+    fun handleRoundNotFoundException(ex: RoundNotFoundException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.ROUND_NOT_FOUND))
+    }
+
+    @ExceptionHandler(ExplanationResultException::class)
+    fun handleExplanationResultException(ex: ExplanationResultException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_EXPLANATION_RESULT))
     }
 }
