@@ -4,12 +4,13 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "player")
+@SuppressWarnings("LongParameterList")
 class Player(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: PlayerInternalId,
+    var id: PlayerInternalId,
 
     @Column(name = "user_id")
     val userId: UserId,

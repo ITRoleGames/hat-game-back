@@ -4,9 +4,11 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.*
+import java.time.Instant
 
 @Entity
 @Table(name = "game")
+@SuppressWarnings("LongParameterList")
 class Game(
     @Id
     @Column(name = "id", nullable = false)
@@ -30,6 +32,12 @@ class Game(
     @JoinColumn(name = "game_id")
     val words: MutableList<WordInGame> = mutableListOf(),
 
+    @Column(name = "start_time", nullable = false)
+    val startTime: Instant = Instant.now(),
+
+    @Column(name = "end_time")
+    var endTime: Instant? = null,
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     var status: GameStatus = GameStatus.NEW,
@@ -39,22 +47,21 @@ class Game(
     var rounds: MutableList<Round> = mutableListOf()
 ) {
 
-    fun addPlayer(userId: UserId) {
-        if (isUserInGame(userId)) {
-            return
-        }
+    fun addPlayer(userId: UserId): Player {
+        findPlayer(userId)?.let { return it }
+
         if (players.size >= MAX_PLAYERS_COUNT) {
             throw PlayersLimitExceededException()
         }
-        players.add(
-            Player(
-                id = PlayerInternalId(),
-                userId = userId,
-                gameId = id,
-                status = PlayerStatus.NEW,
-                role = PlayerRole.PLAYER,
-            )
+        val player = Player(
+            id = PlayerInternalId(),
+            userId = userId,
+            gameId = id,
+            status = PlayerStatus.NEW,
+            role = PlayerRole.PLAYER,
         )
+        players.add(player)
+        return player
     }
 
     fun addWordsToPlayer(userId: UserId, words: List<String>) {
@@ -69,7 +76,7 @@ class Game(
             WordInGame(
                 gameId = id,
                 value = it,
-                authorId = player.id.internalId!!,
+                authorId = player.id,
                 status = WordInGameStatus.AVAILABLE
             )
         }
@@ -80,8 +87,8 @@ class Game(
         }
     }
 
-    fun isUserInGame(userId: UserId): Boolean {
-        return players.any { it.userId == userId }
+    private fun findPlayer(userId: UserId): Player? {
+        return players.firstOrNull { it.userId == userId }
     }
 
     fun getPlayerByUserId(userId: UserId): Player {
