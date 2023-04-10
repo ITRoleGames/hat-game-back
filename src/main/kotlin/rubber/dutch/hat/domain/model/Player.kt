@@ -10,7 +10,7 @@ class Player(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    var id: PlayerInternalId,
+    val id: PlayerInternalId,
 
     @Column(name = "user_id")
     val userId: UserId,

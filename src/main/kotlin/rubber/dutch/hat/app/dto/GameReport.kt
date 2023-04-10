@@ -13,7 +13,7 @@ data class GameReport(
 )
 
 data class TeamStat(
-    @field:Schema(description = "Внуттренний ID команды.")
+    @field:Schema(description = "Внутренний ID команды.")
     val teamId: Int,
     @field:Schema(description = "Список ID игроков.")
     val players: List<PlayerInternalId>,

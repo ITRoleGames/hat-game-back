@@ -1,6 +1,6 @@
 package rubber.dutch.hat.app
 
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import rubber.dutch.hat.app.dto.GameReport
 import rubber.dutch.hat.app.dto.TeamStat
 import rubber.dutch.hat.domain.exception.GameNotFoundException
@@ -10,7 +10,7 @@ import rubber.dutch.hat.domain.service.GameProvider
 import java.time.Duration
 import java.time.Instant
 
-@Service
+@Component
 class GetGameReportUsecase(private val gameProvider: GameProvider) {
 
     fun execute(gameId: GameId): GameReport {
@@ -29,14 +29,14 @@ class GetGameReportUsecase(private val gameProvider: GameProvider) {
         val playerToTeam = game.players.associate { it.id to it.teamId }
         game.words.filter { it.isExplained() }
             .forEach {
-                val teamId = playerToTeam[it.explainerId]!!
-                teamStats[teamId]!!.wordsGuessed++
+                val teamId = playerToTeam.getTeamId(it.explainerId)
+                teamStats.getTeamStat(teamId).wordsGuessed++
             }
 
         game.rounds
             .forEach {
-                val teamId = playerToTeam[it.explainerId]!!
-                teamStats[teamId]!!.roundsCount++
+                val teamId = playerToTeam.getTeamId(it.explainerId)
+                teamStats.getTeamStat(teamId).roundsCount++
             }
 
         return GameReport(
@@ -52,6 +52,12 @@ class GetGameReportUsecase(private val gameProvider: GameProvider) {
             }.sortedByDescending { it.wordsGuessed }
         )
     }
+
+    private fun Map<PlayerInternalId, Int>.getTeamId(playerId: PlayerInternalId) =
+        get(playerId) ?: error("teamId for player $playerId expected")
+
+    private fun MutableMap<Int, TeamStatAccumulator>.getTeamStat(teamId: Int?) =
+        get(teamId) ?: error("Statistics for team $teamId expected")
 }
 
 internal data class TeamStatAccumulator(
