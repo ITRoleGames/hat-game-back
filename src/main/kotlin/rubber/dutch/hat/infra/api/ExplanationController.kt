@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.FinishCurrentAndStartNewExplanationUsecase
 import rubber.dutch.hat.app.dto.ExplanationResponse
-import rubber.dutch.hat.app.dto.UpdateExplanationRequest
+import rubber.dutch.hat.app.dto.UpdateExplanationPayload
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.RoundId
 import rubber.dutch.hat.domain.model.UserId
@@ -25,7 +25,7 @@ class ExplanationController(
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Раунд создан"
+                description = "Получено новое объяснение"
             ),
             ApiResponse(
                 responseCode = "422",
@@ -38,7 +38,7 @@ class ExplanationController(
     fun finishCurrentAndStartNewExplanation(
         @PathVariable gameId: GameId,
         @PathVariable roundId: RoundId,
-        @RequestBody updateExplanationRequest: UpdateExplanationRequest,
+        @RequestBody updateExplanationRequest: UpdateExplanationPayload,
         @RequestHeader(USER_ID_HEADER) userId: UserId
     ): ExplanationResponse {
         return finishCurrentAndStartNewExplanationUsecase.execute(gameId, roundId, updateExplanationRequest, userId)

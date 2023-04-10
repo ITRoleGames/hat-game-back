@@ -69,4 +69,9 @@ class ControllerExceptionHandler {
     fun handleExplanationResultException(ex: ExplanationResultException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_EXPLANATION_RESULT))
     }
+
+    @ExceptionHandler(IncorrectMoveOrderException::class)
+    fun handleIncorrectMoveOrderException(ex: IncorrectMoveOrderException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INCORRECT_MOVE_ORDER))
+    }
 }

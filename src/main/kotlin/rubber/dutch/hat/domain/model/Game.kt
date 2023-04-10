@@ -80,7 +80,7 @@ class Game(
         }
     }
 
-    fun isUserInGame(userId: UserId): Boolean {
+    private fun isUserInGame(userId: UserId): Boolean {
         return players.any { it.userId == userId }
     }
 
@@ -88,19 +88,23 @@ class Game(
         return players.firstOrNull { it.userId == userId } ?: throw UserNotJoinedException()
     }
 
-    fun getPlayerByPlayerId(playerId: PlayerInternalId): Player {
+    private fun getPlayerByPlayerId(playerId: PlayerInternalId): Player {
         return players.firstOrNull { it.id == playerId } ?: throw PlayerNotFoundException()
     }
 
-    fun createRound(playerId: PlayerInternalId, gameId: GameId): Round {
+    fun createRound(playerId: PlayerInternalId): Round {
         if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
             throw RoundStatusException()
+        }
+
+        if (!isCorrectMoveOrder(getPlayerByPlayerId(playerId))) {
+            throw IncorrectMoveOrderException()
         }
 
         val round = Round(
             id = RoundId(),
             explainerId = playerId,
-            gameId = gameId
+            gameId = id
         )
         rounds.add(round)
         return round
@@ -112,6 +116,24 @@ class Game(
 
     fun getLastRound(): Round? {
         return rounds.maxByOrNull { it.startTime }
+    }
+
+    fun getCurrentRound(): Round {
+        if (rounds.size == 0) {
+            throw RoundNotFoundException()
+        }
+        val round = getLastRound()
+        if (round?.status != Round.RoundStatus.STARTED) {
+            throw RoundStatusException()
+        }
+        return round
+    }
+
+    private fun isCorrectMoveOrder(currentPlayer: Player): Boolean {
+        val round = getLastRound() ?: return currentPlayer.moveOrder == 0
+
+        val lastPlayer = getPlayerByPlayerId(round.explainerId)
+        return currentPlayer.moveOrder == (lastPlayer.moveOrder + 1) % players.size
     }
 
     enum class GameStatus {

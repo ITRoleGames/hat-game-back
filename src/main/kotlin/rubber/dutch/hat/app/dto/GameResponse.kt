@@ -20,7 +20,7 @@ data class GameResponse(
     val moveTime: Int,
 
     @field:Schema(description = "Игроки")
-    val players: List<PlayerDto>,
+    val players: List<PlayerResponse>,
 
     @field:Schema(description = "Количество слов")
     val wordsCount: Int,
@@ -36,7 +36,7 @@ fun Game.toGameResponse(): GameResponse {
         creatorId = creatorId.userId.toString(),
         wordsPerPlayer = config.wordsPerPlayer,
         moveTime = config.moveTime,
-        players = players.map(Player::toDto),
+        players = players.map(Player::toResponse),
         wordsCount = words.size,
         status = status
     )
