@@ -1,12 +1,12 @@
 package rubber.dutch.hat.app
 
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
 import rubber.dutch.hat.app.dto.ExplanationResponse
 import rubber.dutch.hat.app.dto.UpdateExplanationPayload
 import rubber.dutch.hat.app.dto.toExplanationResponse
 import rubber.dutch.hat.domain.exception.ExplanationResultException
 import rubber.dutch.hat.domain.exception.GameNotFoundException
-import rubber.dutch.hat.domain.exception.ResultException
 import rubber.dutch.hat.domain.exception.RoundNotFoundException
 import rubber.dutch.hat.domain.model.*
 import rubber.dutch.hat.domain.port.EventSender
@@ -21,10 +21,11 @@ class FinishCurrentAndStartNewExplanationUsecase(
     private val explanationSaver: ExplanationSaver,
     private val eventSender: EventSender
 ) {
+    @Transactional
     fun execute(
         gameId: GameId,
         roundId: RoundId,
-        request: UpdateExplanationPayload,
+        payload: UpdateExplanationPayload,
         userId: UserId
     ): ExplanationResponse {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
@@ -33,18 +34,18 @@ class FinishCurrentAndStartNewExplanationUsecase(
         if (round.id != roundId) {
             throw RoundNotFoundException()
         }
-        val explanation = round.getExplanationById(request.id)
+        val explanation = round.getExplanationById(payload.id)
         if (explanation.result != null) {
-            throw ExplanationResultException()
+            throw ExplanationResultException("Current explanation is completed")
         }
-        explanation.result = request.result
+        explanation.result = payload.result
         explanation.endTime = Instant.now()
         val word = explanation.word
 
-        when (request.result) {
+        when (payload.result) {
             ExplanationResult.EXPLAINED -> word.status = WordInGameStatus.EXPLAINED
             ExplanationResult.FAILED -> word.status = WordInGameStatus.FUCKUPED
-            else -> throw ResultException()
+            else -> throw ExplanationResultException("Incorrect result")
         }
         explanationSaver.save(explanation)
 

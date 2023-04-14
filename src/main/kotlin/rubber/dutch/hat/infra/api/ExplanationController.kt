@@ -38,9 +38,9 @@ class ExplanationController(
     fun finishCurrentAndStartNewExplanation(
         @PathVariable gameId: GameId,
         @PathVariable roundId: RoundId,
-        @RequestBody updateExplanationRequest: UpdateExplanationPayload,
+        @RequestBody updateExplanationPayload: UpdateExplanationPayload,
         @RequestHeader(USER_ID_HEADER) userId: UserId
     ): ExplanationResponse {
-        return finishCurrentAndStartNewExplanationUsecase.execute(gameId, roundId, updateExplanationRequest, userId)
+        return finishCurrentAndStartNewExplanationUsecase.execute(gameId, roundId, updateExplanationPayload, userId)
     }
 }

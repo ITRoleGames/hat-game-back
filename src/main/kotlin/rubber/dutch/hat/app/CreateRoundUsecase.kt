@@ -1,5 +1,6 @@
 package rubber.dutch.hat.app
 
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
 import rubber.dutch.hat.app.dto.RoundResponse
 import rubber.dutch.hat.app.dto.toRoundResponse
@@ -17,6 +18,7 @@ class CreateRoundUsecase(
     private val explanationSaver: ExplanationSaver,
     private val eventSender: EventSender
 ) {
+    @Transactional
     fun execute(gameId: GameId, userId: UserId): RoundResponse {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
         if (game.status != Game.GameStatus.STARTED) {

@@ -55,11 +55,6 @@ class ControllerExceptionHandler {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.EXPLANATION_NOT_FOUND))
     }
 
-    @ExceptionHandler(MoveOrderException::class)
-    fun handleMoveOrderException(ex: MoveOrderException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.INVALID_MOVE_ORDER))
-    }
-
     @ExceptionHandler(RoundNotFoundException::class)
     fun handleRoundNotFoundException(ex: RoundNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.unprocessableEntity().body(ErrorResponse(ErrorCode.ROUND_NOT_FOUND))

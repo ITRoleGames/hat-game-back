@@ -14,6 +14,9 @@ data class RoundResponse(
     @field:Schema(description = "Объяснение")
     val explanation: ExplanationResponse,
 
+    @field:Schema(description = "Статус раунда")
+    val status: Round.RoundStatus,
+
     @field:Schema(description = "Время начала раунда")
     val startTime: Instant
 )
@@ -23,6 +26,7 @@ fun Round.toRoundResponse(): RoundResponse {
         id = id,
         explainerId = explainerId,
         explanation = getLastExplanation().toExplanationResponse(),
+        status = status,
         startTime = startTime
     )
 }
