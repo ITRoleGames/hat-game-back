@@ -1,7 +1,7 @@
 package rubber.dutch.hat.app
 
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import rubber.dutch.hat.app.dto.ExplanationResponse
 import rubber.dutch.hat.app.dto.UpdateExplanationPayload
 import rubber.dutch.hat.app.dto.toExplanationResponse

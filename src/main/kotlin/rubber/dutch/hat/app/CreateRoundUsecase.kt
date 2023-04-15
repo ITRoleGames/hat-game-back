@@ -1,7 +1,7 @@
 package rubber.dutch.hat.app
 
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import rubber.dutch.hat.app.dto.RoundResponse
 import rubber.dutch.hat.app.dto.toRoundResponse
 import rubber.dutch.hat.domain.exception.GameNotFoundException

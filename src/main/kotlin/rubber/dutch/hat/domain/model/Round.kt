@@ -2,7 +2,6 @@ package rubber.dutch.hat.domain.model
 
 import jakarta.persistence.*
 import rubber.dutch.hat.domain.exception.ExplanationNotFoundException
-import rubber.dutch.hat.domain.exception.ExplanationResultException
 import java.time.Instant
 
 @Entity
@@ -43,19 +42,6 @@ class Round(
 
         explanations.add(explanation)
         return explanation
-    }
-
-    fun finishCurrentExplanation(explanationId: ExplanationId, result: ExplanationResult) {
-        val explanation = getExplanationById(explanationId)
-        explanation.result = result
-        explanation.endTime = Instant.now()
-        val word = explanation.word
-
-        when (result) {
-            ExplanationResult.EXPLAINED -> word.status = WordInGameStatus.EXPLAINED
-            ExplanationResult.FAILED -> word.status = WordInGameStatus.FUCKUPED
-            else -> throw ExplanationResultException("что-то пошло не так")
-        }
     }
 
     fun getExplanationById(explanationId: ExplanationId): Explanation {

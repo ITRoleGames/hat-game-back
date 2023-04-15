@@ -114,7 +114,7 @@ class Game(
         return words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
     }
 
-    fun getLastRound(): Round? {
+    private fun getLastRound(): Round? {
         return rounds.maxByOrNull { it.startTime }
     }
 
