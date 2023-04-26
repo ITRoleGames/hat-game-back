@@ -24,9 +24,9 @@ class Explanation(
     @Column(name = "end_time")
     var endTime: Instant? = null,
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "result")
-    var status: ExplanationResult? = null
-// todo: статус ли это?
+    var result: ExplanationResult? = null
 )
 
 enum class ExplanationResult {

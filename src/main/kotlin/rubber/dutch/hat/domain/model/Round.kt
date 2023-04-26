@@ -1,6 +1,7 @@
 package rubber.dutch.hat.domain.model
 
 import jakarta.persistence.*
+import rubber.dutch.hat.domain.exception.ExplanationNotFoundException
 import java.time.Instant
 
 @Entity
@@ -29,19 +30,22 @@ class Round(
     var status: RoundStatus = RoundStatus.STARTED
 ) {
     fun getLastExplanation(): Explanation {
-        return explanations.maxByOrNull { it.startTime } ?: throw IllegalStateException("Invalid situation")
+        return explanations.maxByOrNull { it.startTime } ?: throw ExplanationNotFoundException()
     }
 
-    fun addNewExplanation(word: WordInGame): Explanation {
+    fun createExplanation(word: WordInGame): Explanation {
         val explanation = Explanation(
             id = ExplanationId(),
             roundId = id,
             word = word
         )
-//        todo: добавить проверки на зевершенный explanation?
 
         explanations.add(explanation)
         return explanation
+    }
+
+    fun getExplanationById(explanationId: ExplanationId): Explanation {
+        return explanations.firstOrNull { it.id == explanationId } ?: throw ExplanationNotFoundException()
     }
 
     enum class RoundStatus {
