@@ -10,6 +10,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.22.0"
 	id("jacoco")
 	id("com.palantir.git-version") version "1.0.0"
+	kotlin("kapt") version "1.8.20"
 }
 
 allOpen {
@@ -38,6 +39,8 @@ dependencies {
 	implementation("rubber.dutch.hat:hat-game-event-api:0.0.1")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation ("org.hibernate.orm:hibernate-jpamodelgen:6.2.0.Final")
+	kapt("org.hibernate.orm:hibernate-jpamodelgen:6.2.0.Final")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-amqp")

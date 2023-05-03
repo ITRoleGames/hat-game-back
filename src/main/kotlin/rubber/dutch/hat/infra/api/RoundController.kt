@@ -4,21 +4,25 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.CreateRoundUsecase
 import rubber.dutch.hat.app.FinishRoundUsecase
+import rubber.dutch.hat.app.GetRoundUsecase
 import rubber.dutch.hat.app.dto.RoundResponse
 import rubber.dutch.hat.domain.model.GameId
 import rubber.dutch.hat.domain.model.RoundId
 import rubber.dutch.hat.domain.model.UserId
 import rubber.dutch.hat.infra.api.dto.ErrorResponse
+import rubber.dutch.hat.infra.api.dto.GetRoundsCriteria
 import rubber.dutch.hat.infra.api.util.USER_ID_HEADER
 
 @RestController
 @RequestMapping("/api/v1")
 class RoundController(
     private val createRoundUsecase: CreateRoundUsecase,
-    private val finishRoundUsecase: FinishRoundUsecase
+    private val finishRoundUsecase: FinishRoundUsecase,
+    private val getRoundUsecase: GetRoundUsecase
 ) {
 
     @Operation(
@@ -64,5 +68,28 @@ class RoundController(
         @RequestHeader(USER_ID_HEADER) userId: UserId
     ) {
         finishRoundUsecase.execute(gameId, userId, roundId)
+    }
+
+    @Operation(
+        summary = "Получить последний раунд",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Раунд получен"
+            ),
+            ApiResponse(
+                responseCode = "422",
+                description = "Бизнес-ошибка",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @GetMapping("/games/{gameId}/rounds")
+    fun getLatestRound(
+        @PathVariable gameId: GameId,
+        @RequestHeader(USER_ID_HEADER) userId: UserId,
+        @Valid criteria: GetRoundsCriteria
+    ): List<RoundResponse> {
+        return getRoundUsecase.execute(gameId, userId, criteria)
     }
 }
