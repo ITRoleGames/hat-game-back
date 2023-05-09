@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.*
+import rubber.dutch.hat.domain.exception.*
 import java.time.Instant
 
 @Entity
@@ -76,7 +77,7 @@ class Game(
             WordInGame(
                 gameId = id,
                 value = it,
-                authorId = player.id,
+                authorId = player.id.internalId!!,
                 status = WordInGameStatus.AVAILABLE
             )
         }
@@ -87,6 +88,10 @@ class Game(
         }
     }
 
+    private fun isUserInGame(userId: UserId): Boolean {
+        return players.any { it.userId == userId }
+    }
+
     private fun findPlayer(userId: UserId): Player? {
         return players.firstOrNull { it.userId == userId }
     }
@@ -95,19 +100,23 @@ class Game(
         return players.firstOrNull { it.userId == userId } ?: throw UserNotJoinedException()
     }
 
-    fun getPlayerByPlayerId(playerId: PlayerInternalId): Player {
+    private fun getPlayerByPlayerId(playerId: PlayerInternalId): Player {
         return players.firstOrNull { it.id == playerId } ?: throw PlayerNotFoundException()
     }
 
-    fun createRound(playerId: PlayerInternalId, gameId: GameId): Round {
+    fun createRound(playerId: PlayerInternalId): Round {
         if (rounds.any { it.status == Round.RoundStatus.STARTED }) {
             throw RoundStatusException()
+        }
+
+        if (!isCorrectMoveOrder(getPlayerByPlayerId(playerId))) {
+            throw IncorrectMoveOrderException()
         }
 
         val round = Round(
             id = RoundId(),
             explainerId = playerId,
-            gameId = gameId
+            gameId = id
         )
         rounds.add(round)
         return round
@@ -117,8 +126,26 @@ class Game(
         return words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
     }
 
-    fun getLastRound(): Round? {
+    private fun getLastRound(): Round? {
         return rounds.maxByOrNull { it.startTime }
+    }
+
+    fun getCurrentRound(): Round {
+        if (rounds.size == 0) {
+            throw RoundNotFoundException()
+        }
+        val round = getLastRound()
+        if (round?.status != Round.RoundStatus.STARTED) {
+            throw RoundStatusException()
+        }
+        return round
+    }
+
+    private fun isCorrectMoveOrder(currentPlayer: Player): Boolean {
+        val round = getLastRound() ?: return currentPlayer.moveOrder == 0
+
+        val lastPlayer = getPlayerByPlayerId(round.explainerId)
+        return currentPlayer.moveOrder == (lastPlayer.moveOrder + 1) % players.size
     }
 
     enum class GameStatus {

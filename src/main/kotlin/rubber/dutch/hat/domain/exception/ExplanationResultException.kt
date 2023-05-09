@@ -1,3 +1,3 @@
 package rubber.dutch.hat.domain.exception
 
-class ExplanationResultException : RuntimeException()
+class ExplanationResultException(message: String) : RuntimeException(message)

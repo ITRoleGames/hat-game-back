@@ -137,7 +137,7 @@ class GameControllerTest : BaseApplicationTest() {
                 jsonPath("code") { value(gameDto.code) }
                 jsonPath("wordsPerPlayer") { value(gameDto.wordsPerPlayer) }
                 jsonPath("moveTime") { value(gameDto.moveTime) }
-                jsonPath("players", Matchers.hasSize<PlayerDto>(4))
+                jsonPath("players", Matchers.hasSize<PlayerResponse>(4))
                 jsonPath("wordsCount") { value(4) }
                 jsonPath("status") { value(Game.GameStatus.STARTED.toString()) }
             }

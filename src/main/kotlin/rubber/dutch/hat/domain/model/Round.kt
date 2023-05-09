@@ -30,7 +30,7 @@ class Round(
     var status: RoundStatus = RoundStatus.STARTED
 ) {
     fun getLastExplanation(): Explanation {
-        return explanations.maxByOrNull { it.startTime } ?: throw IllegalStateException("Invalid situation")
+        return explanations.maxByOrNull { it.startTime } ?: throw ExplanationNotFoundException()
     }
 
     fun createExplanation(word: WordInGame): Explanation {
