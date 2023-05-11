@@ -71,11 +71,11 @@ class RoundController(
     }
 
     @Operation(
-        summary = "Получить последний раунд",
+        summary = "Получить раунды",
         responses = [
             ApiResponse(
                 responseCode = "200",
-                description = "Раунд получен"
+                description = "Раунды получены"
             ),
             ApiResponse(
                 responseCode = "422",
@@ -85,7 +85,7 @@ class RoundController(
         ]
     )
     @GetMapping("/games/{gameId}/rounds")
-    fun getLatestRound(
+    fun getRounds(
         @PathVariable gameId: GameId,
         @RequestHeader(USER_ID_HEADER) userId: UserId,
         @Valid criteria: GetRoundsCriteria
