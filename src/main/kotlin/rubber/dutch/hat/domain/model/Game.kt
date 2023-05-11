@@ -77,7 +77,7 @@ class Game(
             WordInGame(
                 gameId = id,
                 value = it,
-                authorId = player.id.internalId!!,
+                authorId = player.id,
                 status = WordInGameStatus.AVAILABLE
             )
         }
@@ -86,10 +86,6 @@ class Game(
         if (player.words.size == config.wordsPerPlayer) {
             player.status = PlayerStatus.READY
         }
-    }
-
-    private fun isUserInGame(userId: UserId): Boolean {
-        return players.any { it.userId == userId }
     }
 
     private fun findPlayer(userId: UserId): Player? {
@@ -122,8 +118,8 @@ class Game(
         return round
     }
 
-    fun getNewWord(): WordInGame {
-        return words.filter { it.status == WordInGameStatus.AVAILABLE }.random()
+    fun getNewWord(): WordInGame? {
+        return words.filter { it.status == WordInGameStatus.AVAILABLE }.randomOrNull()
     }
 
     private fun getLastRound(): Round? {
