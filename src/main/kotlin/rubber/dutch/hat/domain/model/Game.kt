@@ -4,7 +4,6 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import rubber.dutch.hat.domain.exception.*
-import rubber.dutch.hat.domain.exception.*
 import java.time.Instant
 
 @Entity
@@ -135,6 +134,10 @@ class Game(
             throw RoundStatusException()
         }
         return round
+    }
+
+    fun finish() {
+        status = GameStatus.FINISHED
     }
 
     private fun isCorrectMoveOrder(currentPlayer: Player): Boolean {

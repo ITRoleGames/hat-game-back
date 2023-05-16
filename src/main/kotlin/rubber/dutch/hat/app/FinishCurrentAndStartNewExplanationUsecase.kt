@@ -27,7 +27,7 @@ class FinishCurrentAndStartNewExplanationUsecase(
         roundId: RoundId,
         payload: UpdateExplanationPayload,
         userId: UserId
-    ): ExplanationResponse {
+    ): ExplanationResponse? {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
         val round = game.getCurrentRound()
 
@@ -47,12 +47,14 @@ class FinishCurrentAndStartNewExplanationUsecase(
             ExplanationResult.FAILED -> word.status = WordInGameStatus.FUCKUPED
             else -> throw ExplanationResultException("Incorrect result")
         }
+        game.getPlayerByUserId(userId).also { word.explainerId = it.id }
         explanationSaver.save(explanation)
 
-        val newExplanation = round.createExplanation(game.getNewWord())
-
-        explanationSaver.save(newExplanation)
-        eventSender.send(GameUpdatedEvent(game.id.gameId, userId.userId))
-        return newExplanation.toExplanationResponse()
+        return game.getNewWord()?.let {
+            val newExplanation = round.createExplanation(it)
+            explanationSaver.save(newExplanation)
+            eventSender.send(GameUpdatedEvent(game.id.gameId, userId.userId))
+            newExplanation.toExplanationResponse()
+        }
     }
 }

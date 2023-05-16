@@ -40,6 +40,7 @@ class GetGameReportUsecase(private val gameProvider: GameProvider) {
             }
 
         return GameReport(
+            gameStatus = game.status,
             wordsGuessed = totalWordsGuessed,
             totalTime = totalTime,
             teamStats = teamStats.values.map {

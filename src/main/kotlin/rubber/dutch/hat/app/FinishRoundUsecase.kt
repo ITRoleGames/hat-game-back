@@ -6,7 +6,9 @@ import rubber.dutch.hat.domain.exception.GameStatusException
 import rubber.dutch.hat.domain.exception.RoundNotFoundException
 import rubber.dutch.hat.domain.model.*
 import rubber.dutch.hat.domain.port.EventSender
+import rubber.dutch.hat.domain.port.WordRepository
 import rubber.dutch.hat.domain.service.GameProvider
+import rubber.dutch.hat.domain.service.GameSaver
 import rubber.dutch.hat.domain.service.RoundSaver
 import rubber.dutch.hat.game.api.GameUpdatedEvent
 import java.time.Instant
@@ -14,8 +16,10 @@ import java.time.Instant
 @Component
 class FinishRoundUsecase(
     private val gameProvider: GameProvider,
+    private val gameSaver: GameSaver,
     private val roundSaver: RoundSaver,
-    private val eventSender: EventSender
+    private val eventSender: EventSender,
+    private val wordRepository: WordRepository
 ) {
     fun execute(gameId: GameId, userId: UserId, roundId: RoundId) {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
@@ -34,6 +38,12 @@ class FinishRoundUsecase(
         round.status = Round.RoundStatus.FINISHED
 
         roundSaver.save(round)
-        eventSender.send(GameUpdatedEvent(game.id.gameId, userId.userId))
+
+        if (!wordRepository.availableWordsExistsInGame(game)) {
+            game.finish()
+            gameSaver.saveAndNotify(game, userId)
+        } else {
+            eventSender.send(GameUpdatedEvent(game.id.gameId, userId.userId))
+        }
     }
 }

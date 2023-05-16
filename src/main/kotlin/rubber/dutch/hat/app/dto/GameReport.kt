@@ -1,9 +1,12 @@
 package rubber.dutch.hat.app.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import rubber.dutch.hat.domain.model.Game
 import rubber.dutch.hat.domain.model.PlayerInternalId
 
 data class GameReport(
+    @field:Schema(description = "Общее количество отгаданных слов в игре.")
+    val gameStatus: Game.GameStatus,
     @field:Schema(description = "Общее количество отгаданных слов в игре.")
     val wordsGuessed: Int,
     @field:Schema(description = "Общая продолжительность игры в секундах.")
