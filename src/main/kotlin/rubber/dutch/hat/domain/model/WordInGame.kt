@@ -15,7 +15,7 @@ class WordInGame(
     val gameId: GameId,
 
     @Column(name = "author_id", nullable = false)
-    val authorId: Long,
+    val authorId: PlayerInternalId,
 
     @Column(name = "value", nullable = false)
     val value: String,
@@ -24,8 +24,11 @@ class WordInGame(
     var status: WordInGameStatus,
 
     @Column(name = "explainer_id", nullable = true)
-    val explainerId: Long? = null,
-)
+    var explainerId: PlayerInternalId = PlayerInternalId(),
+) {
+
+    fun isExplained() = status == WordInGameStatus.EXPLAINED
+}
 
 enum class WordInGameStatus {
     AVAILABLE,

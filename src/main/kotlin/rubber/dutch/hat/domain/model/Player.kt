@@ -4,6 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "player")
+@SuppressWarnings("LongParameterList")
 class Player(
 
     @Id

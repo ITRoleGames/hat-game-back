@@ -19,7 +19,7 @@ class GetRoundUsecase(
 ) {
     fun execute(gameId: GameId, userId: UserId, criteria: GetRoundsCriteria): List<RoundResponse> {
         val game = gameProvider.findById(gameId) ?: throw GameNotFoundException()
-        if (game.status != Game.GameStatus.STARTED) throw GameStatusException()
+        if (game.status == Game.GameStatus.NEW) throw GameStatusException()
 
         return roundProvider.find(criteria.toFindCriteria(gameId)).map { it.toRoundResponse() }
     }

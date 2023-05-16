@@ -28,7 +28,8 @@ class CreateRoundUsecase(
         val player = game.getPlayerByUserId(userId)
         val round = game.createRound(player.id)
         val savedRound = roundSaver.save(round)
-        val explanation = round.createExplanation(game.getNewWord())
+        val newWord = game.getNewWord() ?: throw GameStatusException()
+        val explanation = round.createExplanation(newWord)
 
         explanationSaver.save(explanation)
         eventSender.send(GameUpdatedEvent(game.id.gameId, userId.userId))

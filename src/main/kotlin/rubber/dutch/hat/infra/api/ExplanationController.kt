@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import rubber.dutch.hat.app.FinishCurrentAndStartNewExplanationUsecase
 import rubber.dutch.hat.app.dto.ExplanationResponse
@@ -40,7 +41,14 @@ class ExplanationController(
         @PathVariable roundId: RoundId,
         @RequestBody updateExplanationPayload: UpdateExplanationPayload,
         @RequestHeader(USER_ID_HEADER) userId: UserId
-    ): ExplanationResponse {
-        return finishCurrentAndStartNewExplanationUsecase.execute(gameId, roundId, updateExplanationPayload, userId)
+    ): ResponseEntity<ExplanationResponse> {
+        return finishCurrentAndStartNewExplanationUsecase.execute(
+            gameId,
+            roundId,
+            updateExplanationPayload,
+            userId
+        )?.let {
+            ResponseEntity.ok(it)
+        } ?: ResponseEntity.noContent().build()
     }
 }
